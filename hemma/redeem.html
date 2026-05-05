@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>استبدال النقاط - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .redeem-page main {
+      width: min(1280px, calc(100% - 32px)) !important;
+      margin-inline: auto !important;
+      padding-block: 1.5rem 3rem !important;
+      display: grid !important;
+      gap: 1.1rem !important;
+      text-align: right !important;
+    }
+
+    .redeem-hero {
+      background: var(--card) !important;
+      color: var(--text) !important;
+      text-align: right !important;
+      padding: clamp(1.5rem, 3vw, 2.3rem) !important;
+      min-height: unset !important;
+    }
+
+    .redeem-hero h1 {
+      color: var(--text) !important;
+      font-size: clamp(2rem, 4vw, 3.2rem) !important;
+    }
+
+    .redeem-hero p {
+      max-width: 42rem;
+      margin: .8rem 0 0 !important;
+      color: var(--text-muted) !important;
+      line-height: 1.9 !important;
+      font-weight: 700;
+    }
+
+    .redeem-hero-icon {
+      background: rgba(239,245,241,.92) !important;
+      color: var(--primary-dark) !important;
+      border: 1px solid rgba(199,216,209,.95) !important;
+      margin-inline: 0 auto !important;
+    }
+
+    .redeem-points-pill {
+      background: rgba(248,250,248,.95) !important;
+      color: var(--text-muted) !important;
+      border: 1px solid rgba(199,216,209,.95) !important;
+      box-shadow: 0 10px 24px rgba(23,57,51,.06) !important;
+      margin: 1.05rem 0 0 !important;
+    }
+
+    .redeem-points-pill #redeem-points {
+      color: var(--primary) !important;
+    }
+
+    .redeem-insights {
+      width: min(1120px, 100%);
+      margin-inline: auto;
+      padding: 1.1rem !important;
+      background: var(--card) !important;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .redeem-insights-head {
+      max-width: 740px;
+      margin: 0 0 1rem;
+      text-align: right;
+    }
+
+    .redeem-insights-head h2 {
+      font-family: 'Cairo', sans-serif;
+      font-size: clamp(1.4rem, 2.7vw, 2.15rem);
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .redeem-insights-head p {
+      margin-top: .55rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+      font-weight: 700;
+    }
+
+    .redeem-insights-grid {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+
+    .redeem-insight-card {
+      background: var(--bg) !important;
+      min-height: 10.25rem;
+      border: 1px solid var(--border);
+      border-radius: 1.25rem;
+      padding: 1.1rem;
+      display: grid;
+      align-content: start;
+      gap: .7rem;
+      text-align: right;
+    }
+
+    .redeem-insight-index {
+      width: 2.25rem;
+      height: 2.25rem;
+      display: grid;
+      place-items: center;
+      border-radius: .85rem;
+      background: rgba(37,88,79,.09);
+      color: var(--primary);
+      font-weight: 900;
+      font-size: .9rem;
+    }
+
+    .redeem-insight-card h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      line-height: 1.4;
+      color: var(--text);
+    }
+
+    .redeem-insight-card p {
+      color: var(--text-muted);
+      font-size: .84rem;
+      line-height: 1.85;
+      font-weight: 700;
+    }
+
+    .redeem-section-shell {
+      width: min(1120px, 100%);
+      margin-inline: auto;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: clamp(1rem, 2.4vw, 1.5rem);
+    }
+
+    .redeem-section-shell .section {
+      padding: 0;
+    }
+
+    .redeem-section-shell .container {
+      max-width: none;
+      padding: 0;
+    }
+
+    .redeem-section-shell .section-header {
+      max-width: none;
+      margin: 0 0 1.15rem;
+      text-align: right;
+    }
+
+    .redeem-section-shell .grid-3 {
+      gap: 18px;
+    }
+
+    #rewards-list > * {
+      min-height: 100%;
+    }
+
+    #rewards-list {
+      text-align: right;
+    }
+
+    #rewards-list .reward-card,
+    #rewards-list .empty-state {
+      border: 1px solid var(--border);
+      border-radius: 1.35rem;
+      background: rgba(255,254,251,.92);
+      box-shadow: 0 16px 34px rgba(23,57,51,.08);
+    }
+
+    #rewards-list .reward-card {
+      text-align: right;
+      transform: translateY(0);
+      transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
+      align-items: start;
+    }
+
+    #rewards-list .reward-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 22px 42px rgba(23,57,51,.11);
+      border-color: color-mix(in srgb, var(--primary) 24%, var(--border));
+    }
+
+    #rewards-list .reward-title,
+    #rewards-list .reward-points,
+    #rewards-list .reward-card p {
+      text-align: right;
+    }
+
+    #rewards-list .empty-state {
+      display: grid;
+      place-items: center;
+      min-height: 9rem;
+      text-align: center;
+      padding: 1.4rem !important;
+    }
+
+    #rewards-list .empty-state h3 {
+      margin-bottom: .35rem;
+    }
+
+    @media (max-width: 760px) {
+      .redeem-page main {
+        gap: .9rem !important;
+      }
+
+      .redeem-rules,
+      .redeem-insights,
+      .redeem-section-shell {
+        width: 100%;
+      }
+
+      .redeem-insights-grid {
+        grid-template-columns: 1fr;
+      }
+
+      #rewards-list .reward-card,
+      #rewards-list .empty-state {
+        text-align: right;
+      }
+    }
+  </style>
+</head>
+<body class="redeem-page">
+
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+
+<main>
+  <section class="page-top-shell">
+    <div class="page-top-hero">
+      <div class="page-top-copy"><div class="page-top-kicker">المكافآت</div><h1>استبدل نقاطك بمكافآت أوضح وأقرب</h1><p>نقاطك تعكس تأثيرك، واستبدالها يصير من مكان واحد واضح ومرتب مع متابعة مباشرة لرصيدك الحالي.</p><div class="page-top-actions"><a href="initiatives.html" class="btn btn-primary">اكسب نقاط الآن</a><a href="about.html" class="btn btn-secondary">اعرف كيف تعمل المنصة</a></div></div><div class="page-top-visual" aria-hidden="true"><div class="page-top-ring"></div><div class="page-top-ring"></div><div class="page-top-tag tag-one">رصيدك</div><div class="page-top-tag tag-two">مكافآت</div><div class="page-top-tag tag-three">شركاء</div><div class="page-top-core"><strong>رصيدك الحالي</strong><span><span id="redeem-points">-</span> نقطة جاهزة للاستخدام داخل صفحة المكافآت.</span></div></div>
+    </div>
+    <div class="page-top-trio">
+      <article class="page-top-card"><strong>كيف تجمع النقاط؟</strong><span>من خلال مشاركاتك الموثقة وحضورك داخل المبادرات المعتمدة.</span></article>
+      <article class="page-top-card"><strong>ما فائدتها؟</strong><span>تحوّل نشاطك إلى مكافآت واضحة من شركاء المنصة في مكان واحد.</span></article>
+      <article class="page-top-card"><strong>متى تستخدمها؟</strong><span>عند ظهور مكافأة مناسبة لاحتياجك الحالي تستطيع استبدالها مباشرة.</span></article>
+    </div>
+  </section>
+
+  <!-- Rewards -->
+  <div class="redeem-section-shell">
+    <section class="section">
+      <div class="container">
+        <div class="section-header">
+          <h2>المكافآت المتاحة</h2>
+          <p>استبدل نقاطك بواحدة من هذه المكافآت داخل تجربة أوضح ومنظمة مثل باقي صفحات المنصة.</p>
+        </div>
+        <div class="grid-3" id="rewards-list">
+          <div style="grid-column:1/-1;text-align:center;padding:40px"><div class="spinner"></div></div>
+        </div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  function onPageLoad() {
+    initRedeemPage();
+  }
+</script>
+</body>
+</html>

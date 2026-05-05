@@ -1,0 +1,1087 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تسجيل الدخول - همة</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Cairo:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    @keyframes slideInRight { from { opacity: 0; transform: translateX(60px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes slideInLeft { from { opacity: 0; transform: translateX(-60px); } to { opacity: 1; transform: translateX(0); } }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes float { 0%, 100% { transform: translateY(0px); } 50% { transform: translateY(-12px); } }
+    @keyframes glow { 0%, 100% { box-shadow: 0 0 0 rgba(45, 122, 107, 0.3); } 50% { box-shadow: 0 0 20px rgba(45, 122, 107, 0.2); } }
+    @keyframes softAura { 0%, 100% { transform: translate3d(0, 0, 0) scale(1); opacity: 0.45; } 50% { transform: translate3d(-16px, 14px, 0) scale(1.06); opacity: 0.72; } }
+    @keyframes shimmer { 0% { background-position: -1000px 0; } 100% { background-position: 1000px 0; } }
+    @keyframes panelSweep { 0% { background-position: 0 0, 0 0; } 100% { background-position: 180px 0, -220px 0; } }
+    @keyframes frameDrift { 0%, 100% { transform: translate3d(0, 0, 0); opacity: 0.7; } 50% { transform: translate3d(-10px, 12px, 0); opacity: 1; } }
+    @keyframes meterFill { 0%, 100% { transform: translateX(48%); } 50% { transform: translateX(0); } }
+    @keyframes scanLine { 0% { transform: translateX(100%); } 100% { transform: translateX(-120%); } }
+    @keyframes riseIn { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: translateY(0); } }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Cairo', 'Poppins', sans-serif;
+      background: linear-gradient(135deg, #0a1f1d 0%, #1a4d47 50%, #0a3a36 100%);
+      min-height: 100vh;
+      display: flex;
+      color: #0f3a34;
+      font-weight: 400;
+      position: relative;
+      overflow-x: hidden;
+      text-align: right;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background:
+        radial-gradient(circle at 20% 50%, rgba(45, 122, 107, 0.15) 0%, transparent 50%),
+        radial-gradient(circle at 80% 80%, rgba(31, 82, 68, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .auth-container {
+      display: flex;
+      width: 100%;
+      min-height: 100vh;
+      flex-direction: row-reverse;
+      position: relative;
+      z-index: 1;
+    }
+
+    /* Right Side - Login Form */
+    .auth-left {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.99) 0%, rgba(250, 253, 252, 0.98) 52%, rgba(239, 248, 244, 0.98) 100%),
+        linear-gradient(35deg, rgba(245, 166, 35, 0.06), transparent 42%, rgba(45, 122, 107, 0.08));
+      backdrop-filter: blur(30px);
+      padding: 3rem 2.5rem;
+      overflow-y: auto;
+      animation: slideInRight 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+      position: relative;
+      isolation: isolate;
+    }
+
+    .auth-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 18% 16%, rgba(45, 122, 107, 0.08), transparent 34%),
+        radial-gradient(circle at 90% 86%, rgba(245, 166, 35, 0.08), transparent 30%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    .auth-left::after {
+      content: none;
+    }
+
+    .auth-header-left {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 4rem;
+      position: relative;
+      z-index: 10;
+    }
+
+    .header-top-actions {
+      display: flex;
+      gap: 1.5rem;
+      align-items: center;
+    }
+
+    .theme-toggle {
+      background: rgba(45, 122, 107, 0.1);
+      border: 1.5px solid rgba(45, 122, 107, 0.2);
+      color: #2d7a6b;
+      min-width: 56px;
+      height: 44px;
+      padding: 0 0.7rem;
+      font-size: 0.82rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 14px;
+    }
+
+    .theme-toggle:hover {
+      background: rgba(45, 122, 107, 0.15);
+      border-color: rgba(45, 122, 107, 0.4);
+      transform: rotate(25deg) scale(1.05);
+    }
+
+    .btn-signup-header {
+      background: linear-gradient(135deg, #2d7a6b 0%, #1f5244 100%);
+      color: white;
+      border: none;
+      padding: 0.8rem 2rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 8px 20px rgba(45, 122, 107, 0.25);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .btn-signup-header::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.2);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.6s, height 0.6s;
+    }
+
+    .btn-signup-header:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 30px rgba(45, 122, 107, 0.4);
+    }
+
+    .btn-signup-header:hover::before {
+      width: 400px;
+      height: 400px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: #0a1f1d;
+      text-decoration: none;
+      letter-spacing: 0;
+      animation: slideInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    }
+
+    .logo-icon {
+      width: 78px;
+      height: 78px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0;
+      background: transparent;
+      border: 0;
+      padding: 0;
+      box-shadow: none;
+      animation: float 4s ease-in-out infinite;
+    }
+
+    .logo-icon img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      display: block;
+    }
+
+    .auth-form-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 420px;
+      margin: 0 auto;
+      width: 100%;
+      position: relative;
+      z-index: 10;
+    }
+
+    .auth-form-header {
+      margin-bottom: 3rem;
+      animation: fadeIn 0.8s ease-out 0.2s both;
+    }
+
+    .auth-title {
+      font-size: 2.2rem;
+      font-weight: 800;
+      color: #0a1f1d;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0;
+      line-height: 1.2;
+    }
+
+    .auth-subtitle {
+      font-size: 1rem;
+      color: #536f68;
+      font-weight: 400;
+      line-height: 1.6;
+    }
+
+    .login-tabs {
+      display: flex;
+      gap: 2rem;
+      margin-bottom: 2rem;
+      padding-bottom: 1.2rem;
+      border-bottom: 2px solid #e8f3f0;
+    }
+
+    .login-tab {
+      background: none;
+      border: none;
+      font-size: 1rem;
+      color: #a8b8b3;
+      cursor: pointer;
+      padding: 0.5rem 0;
+      transition: all 0.3s ease;
+      font-weight: 500;
+      position: relative;
+    }
+
+    .login-tab.active {
+      color: #0a1f1d;
+      font-weight: 700;
+    }
+
+    .login-tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: -1.2rem;
+      left: 0;
+      width: 100%;
+      height: 3px;
+      background: linear-gradient(90deg, #2d7a6b 0%, #1f5244 100%);
+      border-radius: 3px;
+      animation: slideInRight 0.4s ease-out;
+    }
+
+    .form-group {
+      margin-bottom: 1.75rem;
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .form-label {
+      display: block;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #0a1f1d;
+      margin-bottom: 0.8rem;
+      letter-spacing: 0.4px;
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 1rem 1.25rem;
+      border: 2px solid #cfdfda;
+      border-radius: 12px;
+      font-size: 0.95rem;
+      font-family: 'Cairo', 'Poppins', sans-serif;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      background: #ffffff;
+      color: #0a1f1d;
+      font-weight: 400;
+      text-align: right;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: #2d7a6b;
+      background: white;
+      box-shadow: 0 0 0 6px rgba(45, 122, 107, 0.08), inset 0 0 0 1px rgba(45, 122, 107, 0.1);
+      transform: scale(1.02);
+    }
+
+    .form-control::placeholder {
+      color: #738882;
+    }
+
+    .password-wrapper {
+      position: relative;
+    }
+
+    .password-toggle {
+      position: absolute;
+      left: 1.25rem;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      color: #a8b8b3;
+      font-size: 0.78rem;
+      font-weight: 800;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      padding: 0.5rem;
+    }
+
+    .password-toggle:hover {
+      color: #2d7a6b;
+      transform: translateY(-50%) scale(1.2);
+    }
+
+    .form-control-password {
+      padding-left: 4.2rem;
+    }
+
+    .forgot-password {
+      text-align: right;
+      margin: 1.2rem 0 2rem 0;
+    }
+
+    .forgot-password a {
+      font-size: 0.9rem;
+      color: #1f6b5c;
+      text-decoration: none;
+      transition: all 0.3s ease;
+      font-weight: 600;
+      position: relative;
+    }
+
+    .forgot-password a::after {
+      content: '';
+      position: absolute;
+      bottom: -3px;
+      left: 0;
+      width: 0;
+      height: 2px;
+      background: linear-gradient(90deg, #2d7a6b 0%, #1f5244 100%);
+      transition: width 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .forgot-password a:hover::after {
+      width: 100%;
+    }
+
+    .submit-btn {
+      width: 100%;
+      padding: 1.15rem;
+      background: linear-gradient(135deg, #2d7a6b 0%, #1f5244 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 1.05rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      margin: 1rem 0 2rem 0;
+      box-shadow: 0 12px 30px rgba(45, 122, 107, 0.3);
+      position: relative;
+      overflow: hidden;
+      letter-spacing: 0.5px;
+    }
+
+    .submit-btn::before {
+      content: '';
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 0;
+      height: 0;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.7s, height 0.7s;
+    }
+
+    .submit-btn:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 16px 40px rgba(45, 122, 107, 0.5);
+    }
+
+    .submit-btn:hover::before {
+      width: 500px;
+      height: 500px;
+    }
+
+    .auth-footer-text {
+      text-align: center;
+      font-size: 0.95rem;
+      color: #536f68;
+    }
+
+    .auth-footer-text a {
+      color: #1f6b5c;
+      font-weight: 700;
+      text-decoration: none;
+      transition: all 0.3s ease;
+    }
+
+    .auth-footer-text a:hover {
+      color: #1f5244;
+    }
+
+    /* Left Side - Features */
+    .auth-right {
+      flex: 1;
+      background:
+        linear-gradient(145deg, rgba(9, 29, 27, 0.98) 0%, rgba(25, 68, 61, 0.97) 52%, rgba(13, 44, 41, 0.99) 100%),
+        radial-gradient(circle at 18% 18%, rgba(127, 213, 204, 0.26), transparent 34%),
+        radial-gradient(circle at 86% 76%, rgba(245, 166, 35, 0.18), transparent 32%);
+      color: white;
+      padding: 4rem 3rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      position: relative;
+      overflow: hidden;
+      animation: slideInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .auth-right::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 28% 30%, rgba(255, 255, 255, 0.18), transparent 28%),
+        radial-gradient(circle at 72% 70%, rgba(127, 213, 204, 0.16), transparent 32%);
+      animation: softAura 9s ease-in-out infinite;
+      pointer-events: none;
+    }
+
+    .auth-right::after {
+      content: none;
+    }
+
+    .auth-right-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 3.5rem;
+      position: relative;
+      z-index: 10;
+      animation: slideInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.1s both;
+    }
+
+    .right-logo {
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-size: 1.3rem;
+      font-weight: 800;
+      letter-spacing: 0;
+    }
+
+    .right-security-badge {
+      background: rgba(255, 255, 255, 0.15);
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      padding: 0.8rem 1.8rem;
+      border-radius: 12px;
+      font-size: 0.9rem;
+      display: flex;
+      align-items: center;
+      gap: 0.8rem;
+      font-weight: 700;
+      backdrop-filter: blur(20px);
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    .right-security-badge:hover {
+      background: rgba(255, 255, 255, 0.2);
+      border-color: rgba(255, 255, 255, 0.5);
+      transform: translateY(-4px);
+    }
+
+    .auth-right-content {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      max-width: 620px;
+      position: relative;
+      z-index: 10;
+      animation: slideInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.2s both;
+      text-align: right;
+    }
+
+    .right-eyebrow {
+      width: fit-content;
+      padding: 0.45rem 0.8rem;
+      margin-bottom: 1.2rem;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.1);
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 0.78rem;
+      font-weight: 800;
+      letter-spacing: 0;
+      backdrop-filter: blur(16px);
+    }
+
+    .auth-right-title {
+      font-size: 3rem;
+      font-weight: 800;
+      margin-bottom: 1.5rem;
+      line-height: 1.2;
+      letter-spacing: 0;
+    }
+
+    .auth-right-subtitle {
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.92);
+      margin-bottom: 2.2rem;
+      line-height: 1.8;
+      font-weight: 400;
+    }
+
+    .live-panel {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .live-status {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      width: fit-content;
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .live-status::before {
+      content: '';
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f5a623;
+      box-shadow: 0 0 0 6px rgba(245, 166, 35, 0.16);
+    }
+
+    .live-status.ready::before {
+      background: #7fd5cc;
+      box-shadow: 0 0 0 6px rgba(127, 213, 204, 0.14);
+    }
+
+    .live-stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.85rem;
+    }
+
+    .live-stat {
+      min-height: 112px;
+      padding: 1rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, 0.1);
+      backdrop-filter: blur(18px);
+      animation: riseIn 0.7s ease both;
+    }
+
+    .live-stat:nth-child(2) { animation-delay: 0.08s; }
+    .live-stat:nth-child(3) { animation-delay: 0.16s; }
+    .live-stat:nth-child(4) { animation-delay: 0.24s; }
+
+    .live-value {
+      color: #fff;
+      font-size: 1.7rem;
+      font-weight: 800;
+      line-height: 1;
+      margin-bottom: 0.65rem;
+      font-family: 'Poppins', 'Cairo', sans-serif;
+    }
+
+    .live-label {
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 0.78rem;
+      font-weight: 700;
+      line-height: 1.5;
+    }
+
+    .impact-showcase {
+      display: grid;
+      gap: 1rem;
+      padding: 1.15rem;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      border-radius: 14px;
+      background:
+        linear-gradient(145deg, rgba(255, 255, 255, 0.14), rgba(255, 255, 255, 0.07)),
+        linear-gradient(90deg, rgba(245, 166, 35, 0.1), rgba(127, 213, 204, 0.08));
+      backdrop-filter: blur(24px);
+      box-shadow: 0 20px 52px rgba(0, 0, 0, 0.2);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .impact-showcase::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.18), transparent);
+      animation: scanLine 5s linear infinite;
+      pointer-events: none;
+    }
+
+    .impact-topline {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .impact-topline span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .impact-topline strong {
+      color: white;
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .impact-meter {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.18);
+      overflow: hidden;
+      position: relative;
+      z-index: 1;
+    }
+
+    .impact-meter span {
+      display: block;
+      height: 100%;
+      width: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, #f5a623, #7fd5cc, #ffffff);
+      transform: translateX(48%);
+      animation: meterFill 5s ease-in-out infinite;
+    }
+
+    .impact-stack {
+      display: grid;
+      gap: 0.85rem;
+      position: relative;
+      z-index: 1;
+    }
+
+    .impact-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 0.85rem;
+      padding: 0.95rem 1rem;
+      border-radius: 12px;
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.12);
+      animation: riseIn 0.6s ease both;
+    }
+
+    .impact-index {
+      width: 42px;
+      height: 42px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.18);
+      color: #fff4d8;
+      font-weight: 800;
+      font-size: 0.82rem;
+      font-family: 'Poppins', 'Cairo', sans-serif;
+    }
+
+    .impact-card p {
+      color: rgba(255, 255, 255, 0.93);
+      font-size: 0.95rem;
+      line-height: 1.55;
+      font-weight: 600;
+      text-align: right;
+    }
+
+    .features-grid {
+      display: grid;
+      gap: 1.4rem;
+    }
+
+    .feature-item {
+      background: rgba(255, 255, 255, 0.12);
+      border: 2px solid rgba(255, 255, 255, 0.2);
+      padding: 1.8rem;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+      cursor: pointer;
+      backdrop-filter: blur(20px);
+      animation: fadeIn 0.8s ease-out;
+    }
+
+    .feature-item:nth-child(1) { animation-delay: 0.25s; }
+    .feature-item:nth-child(2) { animation-delay: 0.35s; }
+    .feature-item:nth-child(3) { animation-delay: 0.45s; }
+    .feature-item:nth-child(4) { animation-delay: 0.55s; }
+
+    .feature-item:hover {
+      background: rgba(255, 255, 255, 0.18);
+      border-color: rgba(255, 255, 255, 0.4);
+      transform: translateX(-12px) translateY(-4px);
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
+    }
+
+    .feature-icon {
+      font-size: 2rem;
+      min-width: 45px;
+      text-align: center;
+      animation: float 5s ease-in-out infinite;
+    }
+
+    .feature-item:nth-child(2) .feature-icon { animation-delay: 0.3s; }
+    .feature-item:nth-child(3) .feature-icon { animation-delay: 0.6s; }
+    .feature-item:nth-child(4) .feature-icon { animation-delay: 0.9s; }
+
+    .feature-text {
+      font-size: 1rem;
+      font-weight: 500;
+      line-height: 1.6;
+    }
+
+    .auth-right-footer {
+      display: flex;
+      justify-content: space-around;
+      padding-top: 2.5rem;
+      border-top: 2px solid rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 10;
+      animation: slideInLeft 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) 0.3s both;
+    }
+
+    .stat-item {
+      text-align: center;
+      transition: all 0.4s ease;
+    }
+
+    .stat-item:hover {
+      transform: scale(1.08);
+    }
+
+    .stat-number {
+      font-size: 2.4rem;
+      font-weight: 800;
+      margin-bottom: 0.5rem;
+      letter-spacing: 0;
+    }
+
+    .stat-label {
+      font-size: 0.9rem;
+      color: rgba(255, 255, 255, 0.85);
+      font-weight: 500;
+    }
+
+    @media (max-width: 768px) {
+      .auth-container { flex-direction: column-reverse; }
+      .auth-right { padding: 3rem 2rem; }
+      .auth-left { padding: 2rem 1.5rem; }
+      .auth-title { font-size: 1.8rem; }
+      .auth-right-title { font-size: 2.2rem; }
+      .form-row { grid-template-columns: 1fr; }
+      .live-stats-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .impact-showcase { padding: 1rem; }
+      .impact-card { grid-template-columns: 1fr; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+
+    [data-theme="dark"] .auth-left {
+      background:
+        linear-gradient(145deg, rgba(15, 42, 39, 0.96), rgba(12, 31, 28, 0.96)),
+        linear-gradient(35deg, rgba(245, 166, 35, 0.08), transparent 42%, rgba(45, 122, 107, 0.12));
+      backdrop-filter: blur(30px);
+    }
+
+    [data-theme="dark"] .auth-title { color: #a8d5cf; }
+    [data-theme="dark"] .logo { color: #7fd5cc; }
+    [data-theme="dark"] .form-control {
+      background: rgba(15, 31, 28, 0.8);
+      border-color: #1f4540;
+      color: white;
+    }
+    [data-theme="dark"] .form-control:focus {
+      background: rgba(15, 42, 39, 0.9);
+      box-shadow: 0 0 0 6px rgba(45, 122, 107, 0.15);
+    }
+  </style>
+</head>
+<body class="auth-page-shell">
+
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+
+<div class="auth-container">
+  <div class="auth-left">
+    <div class="auth-header-left">
+      <span></span>
+      <div class="header-top-actions">
+        <button type="button" class="btn-signup-header" onclick="window.location.href='signup.html'">إنشاء حساب</button>
+      </div>
+    </div>
+
+    <div class="auth-form-wrapper">
+      <div class="auth-form-header">
+        <div class="auth-title">مرحباً بعودتك</div>
+        <div class="auth-subtitle">أدخل بيانات تسجيل الدخول إلى حسابك</div>
+      </div>
+
+      <form id="signin-form" onsubmit="handleSignin(event)" autocomplete="on" novalidate>
+        <div class="form-group">
+          <label class="form-label">اسم المستخدم</label>
+          <input name="username" class="form-control" type="text" placeholder="مثال: samma_user" autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus/>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">كلمة المرور</label>
+          <div class="password-wrapper">
+            <input name="password" class="form-control form-control-password" type="password" placeholder="اكتب كلمة المرور الخاصة بك" autocomplete="current-password" required id="pass-field"/>
+            <button type="button" class="password-toggle" onclick="togglePassword()" aria-label="إظهار أو إخفاء كلمة المرور">إظهار</button>
+          </div>
+        </div>
+
+        <div class="forgot-password">
+          <a href="#">نسيت كلمة المرور؟</a>
+        </div>
+
+        <button type="submit" class="submit-btn" data-default-text="تسجيل الدخول">تسجيل الدخول</button>
+      </form>
+
+      <p class="auth-footer-text">
+        ليس لديك حساب؟ <a href="signup.html">إنشاء حساب</a>
+      </p>
+    </div>
+  </div>
+
+  <div class="auth-right">
+    <div class="auth-right-header">
+      <div class="right-logo">
+        <img src="Logo.png" alt="همة" style="width: 2rem; height: 2rem; object-fit: contain; border-radius: 0.65rem; background: rgba(255,255,255,0.86); padding: 0.22rem;"/>
+      </div>
+      <div class="right-security-badge">
+        <span>معتمد وآمن</span>
+      </div>
+    </div>
+
+    <div class="auth-right-content">
+      <div class="right-eyebrow">بيانات مباشرة من همة</div>
+      <div class="auth-right-title">الأثر يتحرك الآن</div>
+      <div class="auth-right-subtitle">نقرأ أرقام المنصة من Firebase ونلخص لك نبض المبادرات قبل دخولك.</div>
+
+      <div class="live-panel">
+        <div class="live-status" id="live-status">جاري تحديث البيانات...</div>
+
+        <div class="live-stats-grid">
+          <div class="live-stat">
+            <div class="live-value" id="live-users">--</div>
+            <div class="live-label">متطوع مسجل</div>
+          </div>
+          <div class="live-stat">
+            <div class="live-value" id="live-initiatives">--</div>
+            <div class="live-label">مبادرة معتمدة</div>
+          </div>
+          <div class="live-stat">
+            <div class="live-value" id="live-participations">--</div>
+            <div class="live-label">مشاركة موثقة</div>
+          </div>
+          <div class="live-stat">
+            <div class="live-value" id="live-cities">--</div>
+            <div class="live-label">مدينة نشطة</div>
+          </div>
+        </div>
+
+        <div class="impact-showcase">
+          <div class="impact-topline">
+            <span>نشاط قريب</span>
+            <strong id="live-featured-city">حسب البيانات</strong>
+          </div>
+          <div class="impact-meter">
+            <span></span>
+          </div>
+          <div class="impact-stack" id="live-activity-list">
+            <div class="impact-card">
+              <div class="impact-index">01</div>
+              <p>نحمّل أحدث المبادرات المعتمدة...</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="auth-right-footer">
+      <div class="stat-item">
+        <div class="stat-number" id="footer-initiatives">--</div>
+        <div class="stat-label">مبادرة</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="footer-users">--</div>
+        <div class="stat-label">متطوع</div>
+      </div>
+      <div class="stat-item">
+        <div class="stat-number" id="footer-cities">--</div>
+        <div class="stat-label">مدينة</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  let signinInsightsLoaded = false;
+
+  function setSigninText(id, value) {
+    const el = document.getElementById(id);
+    if (el) el.textContent = value;
+  }
+
+  function compactCount(value) {
+    if (typeof value !== 'number') return '--';
+    if (value >= 1000) return `${(value / 1000).toFixed(value >= 10000 ? 0 : 1)}k`;
+    return String(value);
+  }
+
+  function renderSigninActivity(initiatives, emptyMessage = 'لا توجد مبادرات معتمدة حالياً، تابعنا قريباً.') {
+    const list = document.getElementById('live-activity-list');
+    if (!list) return;
+
+    const createCard = (index, text) => {
+      const card = document.createElement('div');
+      const number = document.createElement('div');
+      const copy = document.createElement('p');
+      card.className = 'impact-card';
+      number.className = 'impact-index';
+      number.textContent = String(index + 1).padStart(2, '0');
+      copy.textContent = text;
+      card.append(number, copy);
+      return card;
+    };
+
+    if (!initiatives.length) {
+      list.replaceChildren(createCard(0, emptyMessage));
+      return;
+    }
+
+    const cards = initiatives.slice(0, 3).map((item, index) => {
+      const text = [
+        item.name || 'مبادرة مجتمعية',
+        item.city,
+        item.date ? formatDate(item.date) : null
+      ].filter(Boolean).join(' · ');
+      return createCard(index, text);
+    });
+    list.replaceChildren(...cards);
+  }
+
+  async function hydrateSigninInsights() {
+    if (signinInsightsLoaded) return;
+    signinInsightsLoaded = true;
+
+    const status = document.getElementById('live-status');
+    if (status) {
+      status.textContent = 'جاري تحديث البيانات...';
+      status.classList.remove('ready');
+    }
+
+    try {
+      if (typeof db === 'undefined') throw new Error('Firestore is not ready');
+
+      const [usersResult, initiativesResult, participationsResult] = await Promise.allSettled([
+        db.collection('users').get(),
+        db.collection('initiatives').where('status', '==', 'approved').get(),
+        db.collection('participations').where('status', 'in', ['joined', 'attended']).get()
+      ]);
+
+      if ([usersResult, initiativesResult, participationsResult].every(result => result.status === 'rejected')) {
+        throw new Error('No readable Firebase data');
+      }
+
+      const usersCount = usersResult.status === 'fulfilled' ? usersResult.value.size : null;
+      const participationsCount = participationsResult.status === 'fulfilled' ? participationsResult.value.size : null;
+      const initiativesAvailable = initiativesResult.status === 'fulfilled';
+      const initiatives = [];
+
+      if (initiativesAvailable) {
+        initiativesResult.value.forEach(doc => initiatives.push({ id: doc.id, ...doc.data() }));
+      }
+
+      const cities = initiatives.reduce((map, item) => {
+        if (!item.city) return map;
+        map.set(item.city, (map.get(item.city) || 0) + 1);
+        return map;
+      }, new Map());
+
+      const topCity = [...cities.entries()].sort((a, b) => b[1] - a[1])[0]?.[0];
+      const today = new Date().toISOString().slice(0, 10);
+      const upcoming = initiatives
+        .filter(item => !item.date || item.date >= today)
+        .sort((a, b) => `${a.date || '9999-99-99'} ${a.time || ''}`.localeCompare(`${b.date || '9999-99-99'} ${b.time || ''}`));
+      const activity = upcoming.length ? upcoming : initiatives
+        .slice()
+        .sort((a, b) => `${b.date || ''} ${b.time || ''}`.localeCompare(`${a.date || ''} ${a.time || ''}`));
+
+      setSigninText('live-users', compactCount(usersCount));
+      setSigninText('live-initiatives', compactCount(initiativesAvailable ? initiatives.length : null));
+      setSigninText('live-participations', compactCount(participationsCount));
+      setSigninText('live-cities', compactCount(initiativesAvailable ? cities.size : null));
+      setSigninText('footer-users', compactCount(usersCount));
+      setSigninText('footer-initiatives', compactCount(initiativesAvailable ? initiatives.length : null));
+      setSigninText('footer-cities', compactCount(initiativesAvailable ? cities.size : null));
+      setSigninText('live-featured-city', initiativesAvailable ? (topCity ? `الأكثر نشاطاً: ${topCity}` : 'نشاط متجدد') : 'بيانات المبادرات غير متاحة');
+      renderSigninActivity(activity, initiativesAvailable ? undefined : 'تعذر تحميل المبادرات المعتمدة حالياً.');
+
+      if (status) {
+        status.textContent = 'آخر تحديث من Firebase';
+        status.classList.add('ready');
+      }
+    } catch (err) {
+      setSigninText('live-status', 'تعذر تحميل بيانات Firebase حالياً');
+      renderSigninActivity([], 'تعذر تحميل بيانات Firebase حالياً.');
+    }
+  }
+
+  function togglePassword() {
+    const f = document.getElementById('pass-field');
+    f.type = f.type === 'password' ? 'text' : 'password';
+  }
+  async function onPageLoad() {
+    if (currentUser) {
+      window.location.href = 'index.html';
+      return;
+    }
+    await hydrateSigninInsights();
+  }
+</script>
+</body>
+</html>

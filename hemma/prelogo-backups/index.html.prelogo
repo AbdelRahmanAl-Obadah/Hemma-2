@@ -1,0 +1,1123 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>همة - منصة العمل التطوعي</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='24' fill='%231a6b3c'/%3E%3Ctext x='50' y='68' font-size='56' text-anchor='middle' fill='white' font-family='Arial'%3EH%3C/text%3E%3C/svg%3E"/>
+  <style>
+    .home-page {
+      background:
+        radial-gradient(circle at top right, rgba(45, 122, 107, 0.14), transparent 32%),
+        radial-gradient(circle at top left, rgba(245, 166, 35, 0.12), transparent 26%),
+        linear-gradient(180deg, #f7fbf8 0%, #eef5f0 34%, #f7fbf8 100%);
+    }
+
+    [data-theme="dark"] .home-page {
+      background:
+        radial-gradient(circle at top right, rgba(127, 213, 204, 0.08), transparent 28%),
+        radial-gradient(circle at top left, rgba(245, 166, 35, 0.08), transparent 22%),
+        linear-gradient(180deg, #0d1915 0%, #12211b 34%, #0d1915 100%);
+    }
+
+    .home-shell {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .home-hero {
+      padding: 34px 0 26px;
+    }
+
+    .hero-surface {
+      position: relative;
+      overflow: hidden;
+      min-height: 620px;
+      padding: 34px;
+      border-radius: 34px;
+      background:
+        linear-gradient(135deg, rgba(10, 31, 29, 0.96), rgba(21, 73, 63, 0.92)),
+        linear-gradient(115deg, rgba(245, 166, 35, 0.2), transparent 42%);
+      box-shadow: 0 24px 80px rgba(16, 50, 43, 0.18);
+      color: white;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(420px, 0.92fr);
+      gap: 28px;
+      isolation: isolate;
+    }
+
+    .hero-surface::before,
+    .hero-surface::after {
+      content: '';
+      position: absolute;
+      inset: auto;
+      border-radius: 50%;
+      filter: blur(20px);
+      opacity: 0.55;
+      z-index: -1;
+    }
+
+    .hero-surface::before {
+      width: 320px;
+      height: 320px;
+      top: -110px;
+      left: -90px;
+      background: rgba(245, 166, 35, 0.14);
+      animation: heroFloat 9s ease-in-out infinite;
+    }
+
+    .hero-surface::after {
+      width: 380px;
+      height: 380px;
+      bottom: -170px;
+      right: -90px;
+      background: rgba(127, 213, 204, 0.12);
+      animation: heroFloat 11s ease-in-out infinite reverse;
+    }
+
+    .hero-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 28px;
+      padding: 8px 6px 8px 0;
+    }
+
+    .hero-kicker {
+      width: fit-content;
+      padding: 0.5rem 0.95rem;
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.09);
+      backdrop-filter: blur(14px);
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .hero-copy h1 {
+      font-family: 'Cairo', sans-serif;
+      font-size: clamp(2.55rem, 5vw, 4.3rem);
+      line-height: 1.08;
+      letter-spacing: 0;
+      margin: 0 0 1rem;
+    }
+
+    .hero-copy p {
+      max-width: 650px;
+      color: rgba(255, 255, 255, 0.82);
+      font-size: 1.02rem;
+      line-height: 1.9;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 14px;
+      margin-top: 1.6rem;
+    }
+
+    .btn-home-primary,
+    .btn-home-secondary {
+      min-height: 52px;
+      padding: 0.95rem 1.35rem;
+      border-radius: 14px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+    }
+
+    .btn-home-primary {
+      background: linear-gradient(135deg, #f5a623, #f0bb59);
+      color: #17362f;
+      box-shadow: 0 16px 36px rgba(245, 166, 35, 0.24);
+    }
+
+    .btn-home-secondary {
+      border: 1px solid rgba(255, 255, 255, 0.18);
+      background: rgba(255, 255, 255, 0.1);
+      color: white;
+      backdrop-filter: blur(14px);
+    }
+
+    .btn-home-primary:hover,
+    .btn-home-secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero-microstats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .hero-microstat {
+      padding: 1rem 1.05rem;
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(16px);
+    }
+
+    .hero-microstat strong {
+      display: block;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.6rem;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .hero-microstat span {
+      color: rgba(255, 255, 255, 0.76);
+      font-size: 0.84rem;
+      font-weight: 600;
+    }
+
+    .hero-panel {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .hero-panel-card {
+      padding: 20px;
+      border-radius: 24px;
+      background: rgba(255, 255, 255, 0.09);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      backdrop-filter: blur(18px);
+      animation: riseIn 0.7s ease both;
+    }
+
+    .hero-panel-card:nth-child(2) {
+      animation-delay: 0.08s;
+    }
+
+    .hero-panel-card:nth-child(3) {
+      animation-delay: 0.16s;
+    }
+
+    .insight-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin-bottom: 14px;
+    }
+
+    .insight-title {
+      font-size: 0.92rem;
+      font-weight: 800;
+      color: rgba(255, 255, 255, 0.92);
+    }
+
+    .insight-tag {
+      padding: 0.32rem 0.7rem;
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.12);
+      color: rgba(255, 255, 255, 0.75);
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .city-spotlight {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .spotlight-box {
+      min-height: 116px;
+      padding: 16px;
+      border-radius: 18px;
+      background: rgba(8, 24, 22, 0.25);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .spotlight-box strong {
+      display: block;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.65rem;
+      margin-bottom: 0.35rem;
+    }
+
+    .spotlight-box span {
+      color: rgba(255, 255, 255, 0.72);
+      font-size: 0.82rem;
+      font-weight: 600;
+    }
+
+    .signal-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .signal-item {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      gap: 12px;
+      align-items: center;
+      padding: 12px 14px;
+      border-radius: 16px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .signal-index {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.14);
+      color: #fff3cf;
+      font-size: 0.78rem;
+      font-weight: 800;
+    }
+
+    .signal-item p {
+      color: rgba(255, 255, 255, 0.88);
+      font-size: 0.88rem;
+      line-height: 1.6;
+      font-weight: 600;
+    }
+
+    .metric-ribbon {
+      margin-top: 26px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .metric-tile {
+      padding: 22px 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(208, 221, 213, 0.9);
+      box-shadow: 0 18px 42px rgba(26, 107, 60, 0.08);
+    }
+
+    [data-theme="dark"] .metric-tile {
+      background: rgba(26, 46, 34, 0.92);
+      border-color: rgba(42, 63, 48, 0.95);
+      box-shadow: 0 18px 42px rgba(0, 0, 0, 0.22);
+    }
+
+    .metric-tile strong {
+      display: block;
+      font-family: 'Cairo', sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+      color: var(--primary-dark);
+      margin-bottom: 0.45rem;
+    }
+
+    [data-theme="dark"] .metric-tile strong {
+      color: #cce8dc;
+    }
+
+    .metric-tile span {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .home-section {
+      padding: 34px 0;
+    }
+
+    .section-band {
+      padding: 30px;
+      border-radius: 30px;
+      background: rgba(255, 255, 255, 0.7);
+      border: 1px solid rgba(208, 221, 213, 0.85);
+      box-shadow: 0 16px 44px rgba(26, 107, 60, 0.06);
+      backdrop-filter: blur(18px);
+    }
+
+    [data-theme="dark"] .section-band {
+      background: rgba(19, 32, 25, 0.86);
+      border-color: rgba(42, 63, 48, 0.92);
+      box-shadow: 0 16px 44px rgba(0, 0, 0, 0.2);
+    }
+
+    .section-topline {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 22px;
+      flex-wrap: wrap;
+    }
+
+    .section-topline h2 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 2rem;
+      line-height: 1.2;
+      margin-bottom: 0.35rem;
+    }
+
+    .section-topline p {
+      color: var(--text-muted);
+      max-width: 620px;
+      font-size: 0.95rem;
+    }
+
+    .signal-badge {
+      padding: 0.5rem 0.85rem;
+      border-radius: 999px;
+      background: rgba(45, 122, 107, 0.1);
+      color: var(--primary);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .explorer-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(320px, 0.82fr);
+      gap: 22px;
+      align-items: start;
+    }
+
+    .map-surface {
+      position: relative;
+      overflow: hidden;
+      min-height: 600px;
+      border-radius: 26px;
+      border: 1px solid rgba(208, 221, 213, 0.8);
+      background: linear-gradient(180deg, rgba(13, 47, 36, 0.07), rgba(255, 255, 255, 0));
+    }
+
+    #home-map {
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+    }
+
+    .map-floating-panel {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      left: 18px;
+      display: grid;
+      gap: 14px;
+      z-index: 450;
+      pointer-events: none;
+    }
+
+    .map-floating-panel > * {
+      pointer-events: auto;
+    }
+
+    .map-filters {
+      display: grid;
+      grid-template-columns: 1.25fr 0.9fr 0.9fr;
+      gap: 12px;
+      padding: 12px;
+      border-radius: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(208, 221, 213, 0.88);
+      box-shadow: 0 14px 36px rgba(26, 107, 60, 0.12);
+      backdrop-filter: blur(18px);
+    }
+
+    [data-theme="dark"] .map-filters,
+    [data-theme="dark"] .home-map-panel {
+      background: rgba(19, 32, 25, 0.92);
+      border-color: rgba(42, 63, 48, 0.92);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.28);
+    }
+
+    .home-filter-control {
+      min-height: 48px;
+      padding: 0.88rem 1rem;
+      border-radius: 14px;
+      border: 1px solid rgba(208, 221, 213, 0.95);
+      background: rgba(255, 255, 255, 0.95);
+      color: var(--text);
+      font-size: 0.92rem;
+      font-family: inherit;
+    }
+
+    [data-theme="dark"] .home-filter-control {
+      background: rgba(12, 24, 18, 0.95);
+      border-color: rgba(42, 63, 48, 0.95);
+      color: var(--text);
+    }
+
+    .home-map-panel {
+      margin-inline-start: auto;
+      width: min(360px, 100%);
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(208, 221, 213, 0.88);
+      box-shadow: 0 14px 36px rgba(26, 107, 60, 0.12);
+      backdrop-filter: blur(20px);
+      display: none;
+    }
+
+    .home-map-panel.open {
+      display: grid;
+      gap: 12px;
+    }
+
+    .panel-chip-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .panel-chip {
+      padding: 0.36rem 0.68rem;
+      border-radius: 999px;
+      background: rgba(45, 122, 107, 0.09);
+      color: var(--primary);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .home-map-panel h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.2rem;
+      line-height: 1.3;
+    }
+
+    .home-map-panel p,
+    .home-map-panel div {
+      color: var(--text-muted);
+      font-size: 0.88rem;
+    }
+
+    .panel-cta {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .panel-link {
+      min-height: 44px;
+      padding: 0.8rem 1rem;
+      border-radius: 12px;
+      background: rgba(45, 122, 107, 0.08);
+      color: var(--primary);
+      font-size: 0.88rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .explorer-side {
+      display: grid;
+      gap: 18px;
+      align-content: start;
+    }
+
+    .mini-card {
+      padding: 20px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(208, 221, 213, 0.88);
+      box-shadow: 0 12px 30px rgba(26, 107, 60, 0.06);
+    }
+
+    [data-theme="dark"] .mini-card {
+      background: rgba(19, 32, 25, 0.92);
+      border-color: rgba(42, 63, 48, 0.92);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .mini-card h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .mini-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .results-stack,
+    .home-featured-grid,
+    .pulse-grid {
+      display: grid;
+      gap: 16px;
+    }
+
+    .result-pill {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 14px 16px;
+      border-radius: 16px;
+      background: rgba(45, 122, 107, 0.06);
+      border: 1px solid rgba(45, 122, 107, 0.1);
+    }
+
+    .result-pill strong {
+      font-size: 0.94rem;
+      line-height: 1.5;
+    }
+
+    .result-pill span {
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      font-weight: 700;
+    }
+
+    .featured-card-home {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(208, 221, 213, 0.88);
+      box-shadow: 0 14px 36px rgba(26, 107, 60, 0.08);
+      display: grid;
+      gap: 14px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+
+    [data-theme="dark"] .featured-card-home {
+      background: rgba(19, 32, 25, 0.92);
+      border-color: rgba(42, 63, 48, 0.92);
+      box-shadow: 0 14px 36px rgba(0, 0, 0, 0.22);
+    }
+
+    .featured-card-home:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 18px 42px rgba(26, 107, 60, 0.12);
+    }
+
+    .featured-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+
+    .featured-head h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.18rem;
+      line-height: 1.4;
+    }
+
+    .featured-badge {
+      padding: 0.36rem 0.68rem;
+      border-radius: 999px;
+      background: rgba(245, 166, 35, 0.14);
+      color: #9a6300;
+      font-size: 0.76rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .featured-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .featured-card-home p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .featured-progress {
+      height: 10px;
+      border-radius: 999px;
+      background: rgba(45, 122, 107, 0.12);
+      overflow: hidden;
+    }
+
+    .featured-progress span {
+      display: block;
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .featured-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      font-weight: 700;
+    }
+
+    .step-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
+
+    .step-card {
+      padding: 22px;
+      border-radius: 22px;
+      background: rgba(255, 255, 255, 0.9);
+      border: 1px solid rgba(208, 221, 213, 0.88);
+      box-shadow: 0 12px 30px rgba(26, 107, 60, 0.06);
+    }
+
+    [data-theme="dark"] .step-card {
+      background: rgba(19, 32, 25, 0.92);
+      border-color: rgba(42, 63, 48, 0.92);
+      box-shadow: 0 12px 30px rgba(0, 0, 0, 0.18);
+    }
+
+    .step-index {
+      width: 46px;
+      height: 46px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, rgba(26, 107, 60, 0.12), rgba(245, 166, 35, 0.14));
+      color: var(--primary-dark);
+      font-size: 0.88rem;
+      font-weight: 900;
+    }
+
+    .step-card h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.1rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .step-card p {
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+
+    .cta-band {
+      padding: 32px;
+      border-radius: 30px;
+      background: linear-gradient(135deg, #143c34, #1d6758);
+      color: white;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 18px;
+      align-items: center;
+      overflow: hidden;
+      position: relative;
+    }
+
+    .cta-band::before {
+      content: '';
+      position: absolute;
+      inset: auto auto -110px -90px;
+      width: 260px;
+      height: 260px;
+      border-radius: 50%;
+      background: rgba(245, 166, 35, 0.15);
+      filter: blur(14px);
+    }
+
+    .cta-band h2 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 2rem;
+      margin-bottom: 0.45rem;
+    }
+
+    .cta-band p {
+      color: rgba(255, 255, 255, 0.78);
+      max-width: 700px;
+      font-size: 0.98rem;
+      line-height: 1.9;
+    }
+
+    .cta-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .footer-home {
+      margin-top: auto;
+      padding: 28px 0 40px;
+      text-align: center;
+      color: var(--text-muted);
+    }
+
+    .footer-home .footer-mark {
+      width: 44px;
+      height: 44px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: white;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+    }
+
+    @keyframes heroFloat {
+      0%, 100% { transform: translate3d(0, 0, 0); }
+      50% { transform: translate3d(0, 18px, 0); }
+    }
+
+    @media (max-width: 1120px) {
+      .hero-surface,
+      .explorer-layout,
+      .cta-band {
+        grid-template-columns: 1fr;
+      }
+
+      .metric-ribbon,
+      .step-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 768px) {
+      .home-shell {
+        width: min(100% - 20px, 1240px);
+      }
+
+      .home-hero {
+        padding-top: 18px;
+      }
+
+      .hero-surface,
+      .section-band,
+      .cta-band {
+        padding: 22px;
+        border-radius: 24px;
+      }
+
+      .hero-surface {
+        min-height: auto;
+      }
+
+      .hero-microstats,
+      .metric-ribbon,
+      .step-grid,
+      .city-spotlight,
+      .map-filters {
+        grid-template-columns: 1fr;
+      }
+
+      .map-surface,
+      #home-map {
+        min-height: 500px;
+      }
+
+      .map-floating-panel {
+        left: 12px;
+        right: 12px;
+        top: 12px;
+      }
+
+      .home-map-panel {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="home-page">
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-icon">H</span>
+      همة
+    </a>
+    <nav class="nav">
+      <a href="index.html" class="active">الرئيسية</a>
+      <a href="initiatives.html">المبادرات</a>
+      <a href="my-initiatives.html">مشاركاتي</a>
+      <a href="col.html">الشراكات</a>
+      <a href="about.html">عن همة</a>
+      <a href="phone.html">تطبيق الهاتف</a>
+      <a href="redeem.html">استبدال النقاط</a>
+    </nav>
+    <div class="header-actions">
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">داكن</button>
+      <button class="mobile-nav-toggle" onclick="toggleMobileNav()">القائمة</button>
+      <div id="header-auth" style="display:flex;gap:8px;align-items:center">
+        <a href="signin.html" class="btn btn-secondary btn-sm">تسجيل الدخول</a>
+        <a href="signup.html" class="btn btn-primary btn-sm">إنشاء حساب</a>
+      </div>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="index.html" class="active">الرئيسية</a>
+    <a href="initiatives.html">المبادرات</a>
+    <a href="my-initiatives.html">مشاركاتي</a>
+    <a href="col.html">الشراكات</a>
+    <a href="about.html">عن همة</a>
+    <a href="phone.html">تطبيق الهاتف</a>
+    <a href="redeem.html">استبدال النقاط</a>
+  </nav>
+</header>
+
+<main class="home-shell">
+  <section class="home-hero">
+    <div class="hero-surface">
+      <div class="hero-copy">
+        <div>
+          <div class="hero-kicker">منصة متناسقة مع تجربتك من أول تسجيل وحتى أول مشاركة</div>
+          <h1>اكتشف المبادرات الأقرب لك وابدأ أثرك من مكان واحد</h1>
+          <p>
+            همة تجمع لك فرص التطوع على خريطة حيّة، وتعرض لك المبادرات المعتمدة، المدن الأكثر نشاطاً،
+            والفرص المفتوحة الآن. الصفحة الرئيسية صارت محطة واضحة للدخول، الاستكشاف، واتخاذ القرار بسرعة.
+          </p>
+          <div class="hero-actions">
+            <a href="#explorer" class="btn-home-primary">استكشف الخريطة الآن</a>
+            <a href="signup.html" class="btn-home-secondary">ابدأ حسابك</a>
+          </div>
+        </div>
+
+        <div class="hero-microstats">
+          <div class="hero-microstat">
+            <strong id="hero-stat-users">--</strong>
+            <span>متطوع نشط</span>
+          </div>
+          <div class="hero-microstat">
+            <strong id="hero-stat-initiatives">--</strong>
+            <span>مبادرة معتمدة</span>
+          </div>
+          <div class="hero-microstat">
+            <strong id="hero-stat-cities">--</strong>
+            <span>مدينة على الخريطة</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="hero-panel">
+        <div class="hero-panel-card">
+          <div class="insight-head">
+            <div class="insight-title">قراءة سريعة من Firebase</div>
+            <div class="insight-tag" id="hero-live-status">جاري التحديث</div>
+          </div>
+          <div class="city-spotlight">
+            <div class="spotlight-box">
+              <strong id="hero-top-city">--</strong>
+              <span>المدينة الأكثر نشاطاً</span>
+            </div>
+            <div class="spotlight-box">
+              <strong id="hero-open-spots">--</strong>
+              <span>فرص متاحة الآن</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-panel-card">
+          <div class="insight-head">
+            <div class="insight-title">نبض قريب</div>
+            <div class="insight-tag">Live</div>
+          </div>
+          <div class="signal-list" id="hero-activity-feed">
+            <div class="signal-item">
+              <div class="signal-index">01</div>
+              <p>نحضّر لك أحدث المبادرات المعتمدة حالياً.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="hero-panel-card">
+          <div class="insight-head">
+            <div class="insight-title">جاهز تبدأ بسرعة؟</div>
+            <div class="insight-tag">Quick path</div>
+          </div>
+          <div class="signal-list">
+            <div class="signal-item">
+              <div class="signal-index">A</div>
+              <p>افتح الخريطة، صفّي المدينة، واعرف أي مبادرة مناسبة اليوم.</p>
+            </div>
+            <div class="signal-item">
+              <div class="signal-index">B</div>
+              <p>إذا عندك حساب، انتقل مباشرة لصفحة المبادرات وانضم من هناك.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="metric-ribbon">
+      <div class="metric-tile">
+        <strong id="stat-initiatives">--</strong>
+        <span>مبادرة معتمدة</span>
+      </div>
+      <div class="metric-tile">
+        <strong id="stat-users">--</strong>
+        <span>متطوع مسجل</span>
+      </div>
+      <div class="metric-tile">
+        <strong id="stat-cities">--</strong>
+        <span>مدينة نشطة</span>
+      </div>
+      <div class="metric-tile">
+        <strong id="stat-participations">--</strong>
+        <span>مشاركة موثقة</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section" id="explorer">
+    <div class="section-band">
+      <div class="section-topline">
+        <div>
+          <h2>خريطة المبادرات مع الفلاتر</h2>
+          <p>شاهد توزع المبادرات على المدن، فلتر حسب المدينة والفئة، وراجع التفاصيل من نفس المكان.</p>
+        </div>
+        <div class="signal-badge" id="home-results-summary">جاري تحميل الفرص</div>
+      </div>
+
+      <div class="explorer-layout">
+        <div class="map-surface">
+          <div id="home-map"></div>
+          <div class="map-floating-panel">
+            <div class="map-filters">
+              <input type="text" id="home-filter-search" class="home-filter-control" placeholder="Search initiative"/>
+              <select id="home-filter-city" class="home-filter-control">
+                <option value="">كل المدن</option>
+              </select>
+              <select id="home-filter-gender" class="home-filter-control">
+                <option value="">كل الفئات</option>
+                <option>ذكر</option>
+                <option>أنثى</option>
+                <option>الكل</option>
+              </select>
+            </div>
+
+            <div class="home-map-panel" id="home-map-panel">
+              <div class="panel-chip-row">
+                <span class="panel-chip">مبادرة مختارة</span>
+                <span class="panel-chip" id="home-panel-city-chip">--</span>
+              </div>
+              <h3 id="home-panel-name">اسم المبادرة</h3>
+              <p id="home-panel-date">التاريخ</p>
+              <div id="home-panel-desc">الوصف</div>
+              <div id="home-panel-count">المشاركون</div>
+              <div class="panel-cta">
+                <button class="btn btn-primary btn-sm" id="home-panel-join-btn" type="button">انضم الآن</button>
+                <a href="initiatives.html" class="panel-link">عرض كل المبادرات</a>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="explorer-side">
+          <div class="mini-card">
+            <h3>نتائج مناسبة لك</h3>
+            <p>هذه القائمة تتغير مباشرة حسب الفلاتر، حتى تعرف بسرعة أي فرصة تستحق الدخول عليها أولاً.</p>
+            <div class="results-stack" id="home-results-list">
+              <div class="result-pill">
+                <strong>نجهز النتائج الآن</strong>
+                <span>--</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="mini-card">
+            <h3>اقتراح سريع</h3>
+            <p id="home-suggestion-copy">سنختار لك مدينة أو مسار مناسب بعد تحميل البيانات من المنصة.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="section-band">
+      <div class="section-topline">
+        <div>
+          <h2>فرص مختارة من المنصة</h2>
+          <p>بطاقات أوضح وأهدأ بصرياً، فيها أهم البيانات التي تحتاجها قبل الانتقال للتفاصيل والانضمام.</p>
+        </div>
+        <a href="initiatives.html" class="btn btn-outline">عرض كل المبادرات</a>
+      </div>
+      <div class="home-featured-grid" id="featured-initiatives">
+        <div class="featured-card-home">
+          <div class="featured-head">
+            <h3>جاري تحميل المبادرات</h3>
+            <span class="featured-badge">Loading</span>
+          </div>
+          <p>نقوم الآن بجلب أحدث البيانات المعتمدة من المنصة.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="section-band">
+      <div class="section-topline">
+        <div>
+          <h2>كيف تبدأ رحلتك في همة</h2>
+          <p>صممنا المسار ليكون بسيطاً ومتناسقاً مع صفحات تسجيل الدخول والتسجيل، بدون تشتيت وبخطوات واضحة.</p>
+        </div>
+      </div>
+
+      <div class="step-grid">
+        <div class="step-card">
+          <div class="step-index">01</div>
+          <h3>أنشئ حسابك بسرعة</h3>
+          <p>واجهة التسجيل مرتبطة بنفس الهوية البصرية وتجهز حسابك خلال لحظات مع رقم هاتف منسق بشكل واضح.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-index">02</div>
+          <h3>فلتر على الخريطة</h3>
+          <p>حدد المدينة أو الفئة التي تناسبك، وشاهد المبادرات الأقرب لك على الخريطة قبل فتح صفحة التفاصيل.</p>
+        </div>
+        <div class="step-card">
+          <div class="step-index">03</div>
+          <h3>انضم وابدأ الأثر</h3>
+          <p>بعد الانضمام، تتابع حضورك ونقاطك ومشاركاتك من خلال النظام نفسه بدون خطوات مشتتة.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section" id="about">
+    <div class="cta-band">
+      <div>
+        <h2>همة تربط بين الرغبة في التطوع والفرصة المناسبة</h2>
+        <p>
+          المنصة مبنية لتسهّل الوصول للمبادرات المعتمدة في الأردن، وتعرضها بطريقة منظمة، قابلة للبحث،
+          ومتصلة بالبيانات الحقيقية الموجودة على Firebase.
+        </p>
+      </div>
+      <div class="cta-actions">
+        <a href="signup.html" class="btn-home-primary">إنشاء حساب</a>
+        <a href="initiatives.html" class="btn-home-secondary">صفحة المبادرات</a>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="footer-home">
+  <div class="footer-mark">H</div>
+  <p>همة - منصة العمل التطوعي في الأردن</p>
+  <p>© جميع الحقوق محفوظة 2026</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  function onPageLoad() {
+    initHomePage();
+  }
+</script>
+</body>
+</html>

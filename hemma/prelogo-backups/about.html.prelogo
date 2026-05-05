@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>عن المنصة - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .about-shell { width: min(1380px, calc(100% - 32px)); margin: 0 auto; padding: 2rem 0 3.4rem; display: grid; gap: 1.25rem; }
+    .about-hero { position: relative; overflow: hidden; border: 1px solid rgba(215,224,218,.96); border-radius: 2rem; min-height: 520px; padding: 2.2rem; background: linear-gradient(135deg, rgba(15,39,35,.98), rgba(37,88,79,.94)), radial-gradient(circle at 20% 80%, rgba(207,160,97,.16), transparent 32%); color: white; box-shadow: 0 22px 58px rgba(23,57,51,.16); display: grid; grid-template-columns: minmax(0,1.05fr) minmax(340px,.95fr); gap: 1.4rem; align-items: center; isolation: isolate; }
+    .about-copy { position: relative; z-index: 1; max-width: 760px; animation: aboutRise .8s ease both; }
+    .about-kicker { width: fit-content; display: inline-flex; align-items: center; gap: .55rem; padding: .55rem .95rem; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.84); font-size: .8rem; font-weight: 800; }
+    .about-kicker::before { content: ''; width: .58rem; height: .58rem; border-radius: 999px; background: #d7b06c; box-shadow: 0 0 0 5px rgba(215,176,108,.16); }
+    .about-copy h1 { margin-top: 1.1rem; font-family: 'Cairo', sans-serif; font-size: clamp(2.4rem, 5vw, 4.7rem); line-height: 1.08; }
+    .about-copy p { margin-top: 1rem; max-width: 46rem; color: rgba(255,255,255,.82); font-size: 1rem; line-height: 2; }
+    .about-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.5rem; }
+    .about-orbit { position: relative; min-height: 380px; display: grid; place-items: center; }
+    .orbit-ring { position: absolute; width: min(86%, 410px); aspect-ratio: 1; border-radius: 50%; border: 1px solid rgba(255,255,255,.14); animation: orbitSpin 20s linear infinite; }
+    .orbit-ring:nth-child(2) { width: min(68%, 320px); animation-duration: 15s; animation-direction: reverse; opacity: .75; }
+    .about-core { width: min(72%, 320px); border-radius: 1.8rem; padding: 1.35rem; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); backdrop-filter: blur(16px); box-shadow: 0 22px 50px rgba(0,0,0,.18); animation: coreFloat 5s ease-in-out infinite; }
+    .about-core strong { display: block; font-family: 'Cairo', sans-serif; font-size: 1.45rem; margin-bottom: .55rem; }
+    .about-core p { color: rgba(255,255,255,.76); font-size: .88rem; line-height: 1.85; }
+    .about-dot { position: absolute; width: 4.6rem; height: 4.6rem; border-radius: 1.25rem; display: grid; place-items: center; background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.14); color: white; font-weight: 900; box-shadow: 0 14px 34px rgba(0,0,0,.16); animation: nodeFloat 4.8s ease-in-out infinite; }
+    .about-dot.one { top: 12%; right: 8%; } .about-dot.two { bottom: 14%; right: 14%; animation-delay: .7s; } .about-dot.three { top: 24%; left: 8%; animation-delay: 1.2s; }
+    .about-story { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .story-card { position: relative; overflow: hidden; border: 1px solid var(--border); border-radius: 1.45rem; background: rgba(255,254,251,.86); padding: 1.35rem; box-shadow: 0 14px 32px rgba(23,57,51,.07); animation: aboutRise .7s ease both; }
+    .story-card::before { content: ''; position: absolute; inset-inline-start: 0; top: 0; width: .28rem; height: 100%; background: linear-gradient(180deg, var(--primary), var(--accent)); }
+    .story-card h2 { font-family: 'Cairo', sans-serif; font-size: 1.08rem; margin-bottom: .55rem; }
+    .story-card p, .story-card li { color: var(--text-muted); font-size: .9rem; line-height: 1.9; }
+    .story-list { display: grid; gap: .5rem; margin-top: .3rem; }
+    @keyframes aboutRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes orbitSpin { to { transform: rotate(360deg); } }
+    @keyframes coreFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+    @keyframes nodeFloat { 0%,100% { transform: translateY(0) rotate(0deg); } 50% { transform: translateY(-8px) rotate(1deg); } }
+    @media (max-width: 980px) { .about-hero, .about-story { grid-template-columns: 1fr; } .about-orbit { min-height: 320px; } }
+  </style>
+</head>
+<body class="about-page">
+<header class="header"><div class="header-inner"><a href="index.html" class="logo"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span>همة</a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html" class="active">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">داكن</button><button class="mobile-nav-toggle" onclick="toggleMobileNav()">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html" class="active">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+<main class="about-shell">
+  <section class="about-hero"><div class="about-copy"><div class="about-kicker">عن المنصة</div><h1>همة تنظّم التطوع من الفكرة إلى الأثر</h1><p>المنصة صُممت لتجعل العمل التطوعي أوضح: مبادرات معتمدة، خريطة تساعد على الوصول، متابعة للحضور، ونقاط تشجع الاستمرارية.</p><div class="about-actions"><a href="initiatives.html" class="btn btn-primary">استكشف المبادرات</a><a href="signup.html" class="btn btn-secondary">ابدأ حسابك</a></div></div><div class="about-orbit" aria-hidden="true"><div class="orbit-ring"></div><div class="orbit-ring"></div><div class="about-dot one">خريطة</div><div class="about-dot two">نقاط</div><div class="about-dot three">حضور</div><div class="about-core"><strong>منظومة واحدة</strong><p>المبادرة، المتطوع، الحضور، والمكافآت داخل تجربة رسمية ومرتبة.</p></div></div></section>
+  <section class="about-story"><article class="story-card"><h2>ماذا تحل همة؟</h2><p>تقلل التشتت بين المبادرات، وتعرض الفرص المعتمدة بطريقة واضحة تجعل قرار الانضمام أسرع وأكثر ثقة.</p></article><article class="story-card"><h2>كيف تعمل؟</h2><ul class="story-list"><li>تستعرض المبادرات من الخريطة أو القائمة.</li><li>تنضم للفرصة المناسبة وتتابعها من حسابك.</li><li>يتم تسجيل الحضور وتحسب النقاط عند الاعتماد.</li></ul></article><article class="story-card"><h2>لماذا هذا مهم؟</h2><p>لأن التطوع يحتاج ثقة وتنظيم ومتابعة، وليس مجرد إعلان فرصة وانتهى.</p></article></section>
+</main>
+<footer class="site-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة العمل التطوعي للشباب في الأردن.</p></div><div><h4>روابط</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="phone.html">تطبيق الهاتف</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a></div></div></div><div class="site-footer-bottom"><span>همة</span><span>© 2026</span></div></footer>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="app.js"></script>
+</body>
+</html>

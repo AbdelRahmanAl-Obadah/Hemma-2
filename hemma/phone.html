@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تطبيق الهاتف - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .phone-page { min-height: 100vh; }
+    .phone-shell { width: min(1240px, calc(100% - 32px)); margin: 0 auto; padding: 2rem 0 3.4rem; display: grid; gap: 1rem; }
+    .phone-hero { position: relative; overflow: hidden; min-height: 620px; border-radius: 2rem; border: 1px solid rgba(199,216,209,.95); background: rgba(255,254,251,.92); color: var(--text); padding: 2.25rem; box-shadow: 0 22px 58px rgba(23,57,51,.08); display: grid; grid-template-columns: minmax(360px, .95fr) minmax(0, 1.05fr); gap: 1.6rem; align-items: center; isolation: isolate; }
+    .phone-hero::before { content: ''; position: absolute; inset: 0; background: radial-gradient(circle at 18% 82%, rgba(37,88,79,.06), transparent 34%); pointer-events: none; z-index: -2; }
+    .phone-hero::after { content: ''; position: absolute; inset-inline-start: min(8vw, 7rem); top: 2rem; width: min(52vw, 42rem); aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(37,88,79,.1); box-shadow: inset 0 0 0 8.5rem rgba(37,88,79,.035); opacity: .95; animation: softRotate 36s linear infinite; z-index: -1; }
+    .phone-copy { max-width: 760px; position: relative; z-index: 1; animation: phoneRise .75s ease both; }
+    .phone-kicker { display: inline-flex; align-items: center; gap: .55rem; padding: .52rem .95rem; border-radius: 999px; background: rgba(239,245,241,.9); border: 1px solid rgba(199,216,209,.95); color: var(--primary-dark); font-size: .8rem; font-weight: 800; }
+    .phone-kicker::before { content: ''; width: .58rem; height: .58rem; border-radius: 999px; background: #d7b06c; box-shadow: 0 0 0 5px rgba(215,176,108,.16); }
+    .phone-copy h1 { margin-top: 1.1rem; font-family: 'Cairo', sans-serif; font-size: clamp(2.6rem, 5vw, 5rem); line-height: 1.05; color: var(--text); }
+    .phone-copy p { margin-top: 1rem; max-width: 46rem; color: var(--text-muted); line-height: 2; font-size: 1rem; }
+    .phone-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.5rem; }
+    .phone-orbit { position: relative; min-height: 470px; display: grid; place-items: center; }
+    .phone-orbit-ring { position: absolute; width: min(92%, 34rem); aspect-ratio: 1; border-radius: 50%; border: 2px solid rgba(37,88,79,.1); animation: softRotate 34s linear infinite; }
+    .phone-orbit-ring:nth-child(2) { width: min(70%, 26rem); animation-duration: 24s; animation-direction: reverse; opacity: .72; }
+    .phone-orbit-core { width: min(78%, 29rem); border: 1px solid rgba(199,216,209,.95); border-radius: 1.7rem; background: rgba(255,254,251,.82); box-shadow: 0 18px 42px rgba(23,57,51,.08); padding: 1.8rem; text-align: center; backdrop-filter: blur(10px); animation: phoneRise .75s ease both; }
+    .phone-orbit-core strong { display: block; font-family: 'Cairo', sans-serif; font-size: clamp(1.8rem, 3vw, 2.5rem); color: var(--text); line-height: 1.2; }
+    .phone-orbit-core span { display: block; margin-top: .8rem; color: var(--text-muted); line-height: 1.9; font-weight: 800; }
+    .phone-orbit-tag { position: absolute; display: grid; place-items: center; min-width: 6.7rem; min-height: 6.7rem; border: 1px solid rgba(199,216,209,.95); border-radius: 1.4rem; background: rgba(255,254,251,.78); box-shadow: 0 18px 42px rgba(23,57,51,.08); color: var(--text); font-family: 'Cairo', sans-serif; font-size: 1.25rem; font-weight: 900; backdrop-filter: blur(10px); }
+    .phone-orbit-tag.alerts { top: 12%; left: 9%; }
+    .phone-orbit-tag.fast { top: 32%; right: 1%; transform: rotate(-8deg); }
+    .phone-orbit-tag.points { bottom: 13%; left: 17%; }
+    .phone-points { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .phone-point { border: 1px solid var(--border); border-radius: 1.35rem; background: rgba(255,254,251,.86); box-shadow: 0 14px 32px rgba(23,57,51,.07); padding: 1.25rem; animation: phoneRise .7s ease both; }
+    .phone-point strong { display: block; font-family: 'Cairo', sans-serif; font-size: 1.12rem; margin-bottom: .45rem; }
+    .phone-point span { color: var(--text-muted); font-size: .9rem; line-height: 1.85; }
+    .phone-section-card { border: 1px solid var(--border); border-radius: 1.6rem; background: var(--card); box-shadow: var(--shadow); padding: clamp(1.2rem, 3vw, 2rem); }
+    .phone-section-card h2 { font-size: clamp(1.5rem, 2.5vw, 2.3rem); color: var(--text); text-align: center; }
+    .phone-section-card > p { max-width: 720px; margin: .7rem auto 1.4rem; color: var(--text-muted); text-align: center; line-height: 1.9; font-weight: 700; }
+    .phone-why-grid, .phone-rewards-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: .8rem; }
+    .phone-why-card, .phone-reward-card { border: 1px solid var(--border); border-radius: 1.15rem; background: var(--bg); padding: 1rem; text-align: center; }
+    .phone-why-card strong, .phone-reward-card strong { display: block; color: var(--primary); font-size: 1rem; margin-bottom: .35rem; }
+    .phone-why-card span, .phone-reward-card span { color: var(--text-muted); font-size: .82rem; line-height: 1.7; font-weight: 700; }
+    @keyframes phoneRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes softRotate { to { transform: rotate(360deg); } }
+    @media (max-width: 1000px) { .phone-why-grid, .phone-rewards-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+    @media (max-width: 900px) { .phone-points { grid-template-columns: 1fr; } .phone-hero { grid-template-columns: 1fr; min-height: unset; padding: 1.35rem; } .phone-orbit { min-height: 380px; order: -1; } .phone-orbit-tag { min-width: 5.4rem; min-height: 5.4rem; font-size: 1rem; } }
+    @media (max-width: 560px) { .phone-why-grid, .phone-rewards-grid { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body class="phone-page">
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+<main class="phone-shell">
+  <section class="phone-hero"><div class="phone-copy"><div class="phone-kicker">تطبيق الهاتف</div><h1>تطبيق همة للهاتف قادم قريباً</h1><p>نعمل على تجربة هاتف خفيفة وسريعة تجعل المبادرات أقرب للمتطوعين: إشعارات أوضح، وصول أسرع للمشاركات، ومتابعة أسهل للحضور والنقاط.</p><div class="phone-actions"><a href="initiatives.html" class="btn btn-primary">استكشف المبادرات الآن</a><a href="about.html" class="btn btn-secondary">تعرف على المنصة</a></div></div><div class="phone-orbit" aria-hidden="true"><div class="phone-orbit-ring"></div><div class="phone-orbit-ring"></div><div class="phone-orbit-tag alerts">إشعارات</div><div class="phone-orbit-tag fast">وصول سريع</div><div class="phone-orbit-tag points">نقاطك</div><div class="phone-orbit-core"><strong>مزايا الهاتف</strong><span>تنبيهات للمواعيد، دخول أسرع للمشاركات، ومتابعة واضحة للحضور والنقاط من شاشة واحدة.</span></div></div></section>
+  <section class="phone-points"><article class="phone-point"><strong>إشعارات أوضح</strong><span>تنبيهات للمواعيد والحضور وتحديث حالة المبادرات بدون البحث داخل الصفحات.</span></article><article class="phone-point"><strong>تجربة ميدانية أسرع</strong><span>وصول مباشر للمبادرات والمشاركات أثناء التنقل.</span></article><article class="phone-point"><strong>متابعة النقاط</strong><span>رؤية أوضح للنقاط والمكافآت وسجل المشاركة من مكان واحد.</span></article></section>
+  <section class="phone-section-card"><h2>لماذا نستخدم تطبيق الهاتف؟</h2><p>التطبيق سيختصر الطريق بين المتطوع والمبادرة، ويجعل المتابعة اليومية للحضور والنقاط أسهل من المتصفح.</p><div class="phone-why-grid"><article class="phone-why-card"><strong>تنبيهات فورية</strong><span>تذكير قبل موعد المبادرة وتحديثات حالة الطلب.</span></article><article class="phone-why-card"><strong>خريطة أسرع</strong><span>اكتشاف المبادرات القريبة من موقعك بوضوح.</span></article><article class="phone-why-card"><strong>حضور أسهل</strong><span>متابعة حالة الحضور والغياب من صفحة واحدة.</span></article><article class="phone-why-card"><strong>نقاطك أمامك</strong><span>رصيد واضح وسجل نقاط مرتب.</span></article><article class="phone-why-card"><strong>تواصل مباشر</strong><span>بيانات صاحب المبادرة تظهر عند الحاجة.</span></article></div></section>
+  <section class="phone-section-card"><h2>مكافآت قادمة داخل التطبيق</h2><p>نماذج مكافآت افتراضية توضّح شكل التجربة عند إطلاق التطبيق وشراكات المكافآت.</p><div class="phone-rewards-grid"><article class="phone-reward-card"><strong>Zain</strong><span>خصومات باقات وخدمات رقمية</span></article><article class="phone-reward-card"><strong>Umniah</strong><span>عروض اتصال وإنترنت</span></article><article class="phone-reward-card"><strong>Orange</strong><span>قسائم وخدمات تقنية</span></article><article class="phone-reward-card"><strong>Carrefour Jordan</strong><span>قسائم مشتريات يومية</span></article><article class="phone-reward-card"><strong>Talabat</strong><span>رصيد طلبات ومكافآت</span></article></div></section>
+</main>
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="app.js"></script>
+</body>
+</html>

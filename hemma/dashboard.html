@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة التحكم - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .dashboard-page { min-height: 100vh; display: flex; flex-direction: column; }
+    .dash-shell { width: min(1180px, calc(100% - 32px)); margin: 34px auto 60px; display: grid; grid-template-columns: 280px minmax(0,1fr); gap: 18px; align-items: start; }
+    .dash-sidebar, .dash-panel { border: 1px solid var(--border); background: var(--card); border-radius: 22px; box-shadow: 0 14px 34px rgba(23,57,51,.07); }
+    .dash-sidebar { padding: 18px; position: sticky; top: 92px; }
+    .dash-user { display: grid; gap: 8px; padding-bottom: 16px; border-bottom: 1px solid var(--border); margin-bottom: 14px; }
+    .dash-avatar-initial { width: 56px; height: 56px; border-radius: 18px; display:grid; place-items:center; background: var(--primary); color:#fff; font-weight:900; font-size:1.3rem; }
+    .dash-user h1 { font-family:'Cairo',sans-serif; font-size:1.15rem; }
+    .dash-user p { color: var(--text-muted); font-size:.86rem; }
+    .dash-nav { display:grid; gap:8px; }
+    .sidebar-item { display:flex; align-items:center; gap:8px; border-radius:14px; padding:11px 12px; color:var(--text-muted); font-weight:800; background:transparent; border:0; cursor:pointer; text-align:right; font-family:inherit; }
+    .sidebar-item.active, .sidebar-item:hover { background: rgba(45,122,107,.09); color: var(--primary); }
+    .dash-panel { padding: 22px; }
+    .dashboard-section { display:none; }
+    .dashboard-section.active { display:block; }
+    .dash-section-head { display:flex; justify-content:space-between; gap:12px; align-items:start; margin-bottom:18px; flex-wrap:wrap; }
+    .dash-section-head h2 { font-family:'Cairo',sans-serif; font-size:1.45rem; }
+    .dash-section-head p { color:var(--text-muted); font-size:.9rem; margin-top:4px; }
+    .dash-form-grid { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:14px; }
+    .dash-form-grid .full { grid-column:1/-1; }
+    .visibility-grid, .dash-overview { display:grid; grid-template-columns: repeat(4,minmax(0,1fr)); gap:10px; }
+    .visibility-item, .overview-box { border:1px solid var(--border); border-radius:14px; padding:12px; background:var(--bg); color:var(--text-muted); font-size:.86rem; font-weight:800; }
+    .overview-box strong { display:block; color:var(--text); font-family:'Cairo',sans-serif; font-size:1.6rem; }
+    .dashboard-grid { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:14px; }
+    .dashboard-list { display:grid; gap:12px; }
+    .field-error { min-height: 18px; color: var(--danger); font-size:.78rem; font-weight:700; }
+    .modal-card { background: var(--card); border: 1px solid color-mix(in srgb, var(--border) 90%, transparent); border-radius: 28px; width: min(100%, 42rem); max-height: 90vh; overflow-y: auto; box-shadow: 0 26px 60px rgba(23,57,51,.16); padding: 22px; }
+    .dashboard-initiative-modal { width: min(100%, 62rem); padding: 14px; }
+    .modal-title-v2 { color: var(--text); font-family:'Dubai','Cairo',sans-serif; font-size: clamp(1.45rem, 2vw, 2rem); font-weight: 900; line-height: 1.15; }
+    .modal-subtitle-v2 { margin-top: 8px; color: var(--text-muted); font-size: .92rem; line-height: 1.9; font-weight: 700; }
+    .create-form { display:grid; gap:14px; }
+    .create-grid-2 { display:grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap:12px; }
+    .create-grid-3 { display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:12px; }
+    .create-actions { display:grid; gap:10px; margin-top: 14px; }
+    .field-label { display:block; margin-bottom: 6px; color: var(--text); font-size: .84rem; font-weight: 800; }
+    .dash-modal-surface { border: 1px solid color-mix(in srgb, var(--border) 88%, transparent); border-radius: 22px; background: linear-gradient(180deg, color-mix(in srgb, var(--card) 98%, white) 0%, color-mix(in srgb, var(--bg) 90%, var(--card)) 100%); padding: 14px; box-shadow: 0 16px 36px rgba(23,57,51,.08); }
+    .dash-modal-surface + .dash-modal-surface { margin-top: 12px; }
+    .secondary-link-btn { min-height: 48px; display:inline-flex; align-items:center; justify-content:center; border:1px solid color-mix(in srgb, var(--border) 90%, transparent); border-radius:999px; background: color-mix(in srgb, var(--card) 94%, var(--bg)); color: var(--text); font-weight: 800; padding: 0 18px; transition: .25s ease; }
+    .secondary-link-btn:hover { transform: translateY(-1px); box-shadow: 0 12px 26px rgba(23,57,51,.09); }
+    .full-width { width: 100%; }
+    .initiative-modal-hero { border: 1px solid rgba(199,216,209,.92); border-radius: 26px; background: color-mix(in srgb, var(--card) 94%, var(--bg)); padding: 20px; box-shadow: 0 18px 42px rgba(23,57,51,.08); }
+    .initiative-modal-top { display:flex; justify-content:space-between; align-items:start; gap:14px; }
+    .initiative-modal-kicker { width:fit-content; border:1px solid rgba(199,216,209,.92); border-radius:999px; background: rgba(239,245,241,.9); color: var(--primary-dark); padding:.38rem .82rem; font-size:.74rem; font-weight:900; }
+    .initiative-modal-title { margin-top:.9rem; color: var(--text); font-family:'Dubai','Cairo',sans-serif; font-size: clamp(1.9rem, 4vw, 3.1rem); font-weight:900; line-height:1.08; }
+    .initiative-modal-close { width:2.4rem; height:2.4rem; border:1px solid var(--border); border-radius:999px; background:var(--card); color:var(--text); font-size:1.3rem; display:grid; place-items:center; cursor:pointer; flex-shrink:0; }
+    .initiative-modal-copy { max-width:48rem; margin-top:1rem; color: var(--text-muted); line-height:1.9; font-weight:700; }
+    .initiative-modal-grid { display:grid; grid-template-columns:minmax(0,1.08fr) minmax(290px,.92fr); gap:14px; margin-top:14px; align-items:start; }
+    .initiative-modal-card { border:1px solid rgba(199,216,209,.92); border-radius:24px; background: color-mix(in srgb, var(--card) 94%, var(--bg)); padding:16px; box-shadow:0 14px 30px rgba(23,57,51,.06); }
+    .initiative-modal-card h4 { color:var(--text); font-family:'Dubai','Cairo',sans-serif; font-size:1rem; font-weight:900; margin-bottom:.9rem; }
+    .initiative-modal-stats { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; }
+    .initiative-stat { border:1px solid rgba(199,216,209,.8); border-radius:18px; background: rgba(246,248,245,.78); padding:.95rem; text-align:center; }
+    .initiative-stat strong { display:block; color:var(--primary-dark); font-family:'Dubai','Cairo',sans-serif; font-size:1.18rem; font-weight:900; line-height:1.2; }
+    .initiative-stat span { display:block; margin-top:.28rem; color:var(--text-muted); font-size:.72rem; font-weight:800; line-height:1.6; }
+    .initiative-modal-actions { display:grid; gap:10px; margin-top:14px; }
+    .initiative-modal-list { display:grid; gap:.7rem; }
+    .initiative-modal-row { display:flex; justify-content:space-between; align-items:start; gap:14px; border-bottom:1px solid rgba(199,216,209,.62); padding-bottom:.72rem; color:var(--text-muted); font-size:.82rem; font-weight:800; }
+    .initiative-modal-row:last-child { border-bottom:0; padding-bottom:0; }
+    .initiative-modal-row strong { color:var(--text); text-align:left; max-width:58%; line-height:1.8; }
+    .detail-progress-track { height:10px; border-radius:999px; background: rgba(215,224,218,.9); overflow:hidden; }
+    .detail-progress-fill { height:100%; border-radius:999px; background: var(--primary); }
+    #my-edit-fields { display:grid; gap:14px; }
+    #my-edit-fields textarea.form-control { min-height: 120px; resize: vertical; }
+    #my-edit-initiative-modal .modal-card { background: color-mix(in srgb, var(--card) 97%, white); border-color: color-mix(in srgb, var(--border) 82%, transparent); box-shadow: 0 28px 70px rgba(23,57,51,.18); }
+    #my-edit-initiative-modal .modal-title-v2 { color: var(--primary-dark); }
+    #my-edit-initiative-modal .modal-subtitle-v2 { color: var(--text-muted); }
+    #my-edit-initiative-modal .form-control { border-radius: 18px; min-height: 54px; background: rgba(255,255,255,.92); border-color: color-mix(in srgb, var(--border) 90%, transparent); }
+    #my-edit-initiative-modal textarea.form-control { min-height: 120px; }
+    [data-theme="dark"] .modal-card, [data-theme="dark"] .dash-modal-surface { background: color-mix(in srgb, var(--card) 95%, var(--bg-secondary)); box-shadow: 0 22px 52px rgba(0,0,0,.34); }
+    [data-theme="dark"] #my-edit-initiative-modal .modal-card { background: color-mix(in srgb, var(--card) 96%, var(--bg-secondary)); }
+    [data-theme="dark"] #my-edit-initiative-modal .form-control { background: rgba(16,25,23,.86); }
+    [data-theme="dark"] .initiative-modal-hero,
+    [data-theme="dark"] .initiative-modal-card,
+    [data-theme="dark"] .initiative-stat { border-color: rgba(43,60,55,.92); background: rgba(27,43,39,.92); }
+    [data-theme="dark"] .secondary-link-btn { background: rgba(27,43,39,.92); border-color: rgba(43,60,55,.92); }
+    @media(max-width: 900px){ .create-grid-2,.create-grid-3,.initiative-modal-grid,.initiative-modal-stats{grid-template-columns:1fr}.modal-card{padding:18px;border-radius:24px}.dashboard-initiative-modal{padding:10px}.initiative-modal-row{flex-direction:column}.initiative-modal-row strong{max-width:100%;text-align:right} }
+    @media(max-width: 900px){ .dash-shell{grid-template-columns:1fr}.dash-sidebar{position:static}.dash-form-grid,.dashboard-grid,.visibility-grid,.dash-overview{grid-template-columns:1fr} }
+  </style>
+</head>
+<body class="dashboard-page">
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+
+
+<main class="dash-shell">
+  <aside class="dash-sidebar">
+    <div class="dash-user">
+      <div class="dash-avatar-initial">؟</div>
+      <h1 id="dash-username">جاري التحميل</h1>
+      <p><span id="dash-points">0</span> نقطة</p>
+      <span id="dash-username2" hidden>جاري التحميل</span>
+      <span id="dash-points2" hidden>0</span>
+    </div>
+    <nav class="dash-nav">
+      <button class="sidebar-item active" data-section="profile" onclick="loadDashSection('profile')">تعديل المعلومات</button>
+      <button class="sidebar-item" data-section="my-initiatives" onclick="loadDashSection('my-initiatives')">مبادراتي</button>
+      <button class="sidebar-item" data-section="joined" onclick="loadDashSection('joined')">مشاركاتي</button>
+      <button class="sidebar-item" data-section="create" onclick="loadDashSection('create')">إنشاء مبادرة</button>
+    </nav>
+  </aside>
+
+  <section class="dash-panel">
+    <section class="dashboard-section active" id="section-profile">
+      <div class="dash-section-head">
+        <div><h2>تعديل الملف الشخصي</h2><p>كل هذه البيانات تقرأ وتُحفظ مباشرة في Firebase.</p></div>
+        <a id="public-profile-link" class="btn btn-secondary btn-sm" href="profile.html">عرض الصفحة العامة</a>
+      </div>
+      <form id="profile-edit-form" onsubmit="saveProfile(event)">
+        <div class="dash-form-grid">
+          <div class="form-group"><label>اسم المستخدم</label><input class="form-control" id="edit-username" disabled></div>
+          <div class="form-group"><label>المحافظة</label><input class="form-control" id="edit-city" placeholder="عمان"></div>
+          <div class="form-group"><label>الجنس</label><select class="form-control" id="edit-gender"><option value="">غير محدد</option><option>ذكر</option><option>أنثى</option></select></div>
+          <div class="form-group"><label>الهاتف</label><input class="form-control" id="edit-phone" type="tel" placeholder="+96279XXXXXXX"></div>
+          <div class="form-group"><label>GitHub</label><input class="form-control" id="edit-github" placeholder="https://github.com/username"></div>
+          <div class="form-group"><label>LinkedIn</label><input class="form-control" id="edit-linkedin" placeholder="https://linkedin.com/in/username"></div>
+          <div class="form-group full"><label>نبذة شخصية</label><textarea class="form-control" id="edit-bio" rows="4" placeholder="اكتب نبذة قصيرة..."></textarea></div>
+        </div>
+        <div class="dash-section-head" style="margin-top:22px"><div><h2>خصوصية المعلومات</h2><p>اختر ما يظهر في صفحتك العامة. الاسم يبقى ظاهراً دائماً.</p></div></div>
+        <div class="visibility-grid">
+          <label class="visibility-item"><input type="checkbox" id="show-phone"> إظهار الهاتف</label>
+          <label class="visibility-item"><input type="checkbox" id="show-city"> إظهار المحافظة</label>
+          <label class="visibility-item"><input type="checkbox" id="show-gender"> إظهار الجنس</label>
+          <label class="visibility-item"><input type="checkbox" id="show-age"> إظهار العمر</label>
+          <label class="visibility-item"><input type="checkbox" id="show-points"> إظهار النقاط</label>
+          <label class="visibility-item"><input type="checkbox" id="show-bio"> إظهار النبذة</label>
+          <label class="visibility-item"><input type="checkbox" id="show-social"> إظهار الروابط</label>
+          <label class="visibility-item"><input type="checkbox" id="show-history"> إظهار السجل</label>
+        </div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:18px">
+          <button class="btn btn-primary" type="submit">حفظ التغييرات</button>
+          <button class="btn btn-danger" type="button" onclick="requestDeleteOwnAccount()">حذف الحساب</button>
+        </div>
+      </form>
+    </section>
+
+    <section class="dashboard-section" id="section-my-initiatives">
+      <div class="dash-section-head"><div><h2>مبادراتي المنشأة</h2><p id="my-created-count">0 مبادرة</p></div></div>
+      <div class="dash-overview"><div class="overview-box"><strong id="summary-created">0</strong>أنشأتها</div><div class="overview-box"><strong id="summary-joined">0</strong>منضم لها</div><div class="overview-box"><strong id="summary-attended">0</strong>حضور</div></div>
+      <div class="dashboard-list" id="my-created-list" style="margin-top:16px"></div>
+      <div class="empty-state hide" id="my-created-empty">لا توجد مبادرات أنشأتها بعد.</div>
+    </section>
+
+    <section class="dashboard-section" id="section-joined">
+      <div class="dash-section-head"><div><h2>مشاركاتي</h2><p id="my-joined-count">0 مشاركة</p></div></div>
+      <div class="dashboard-list" id="my-joined-list"></div>
+      <div class="empty-state hide" id="my-joined-empty">لم تنضم لأي مبادرة بعد.</div>
+      <span id="summary-created-top" hidden>0</span><span id="summary-joined-top" hidden>0</span><span id="summary-attended-top" hidden>0</span>
+    </section>
+
+    <section class="dashboard-section" id="section-create">
+      <div class="dash-section-head"><div><h2>إنشاء مبادرة جديدة</h2><p>النقاط ثابتة: 30 نقطة للحضور، وتُرسل المبادرة للمراجعة.</p></div></div>
+      <form id="create-initiative-form" class="dash-form-grid">
+        <div class="form-group"><label>اسم المبادرة</label><input class="form-control" name="name" placeholder="اسم المبادرة"><div class="field-error" id="create-error-name"></div></div>
+        <div class="form-group"><label>موعد البداية</label><input class="form-control" name="startsAt" type="datetime-local"><div class="field-error" id="create-error-startsAt"></div></div>
+        <div class="form-group full"><label>الوصف</label><textarea class="form-control" name="description" rows="4" placeholder="وصف المبادرة..."></textarea><div class="field-error" id="create-error-description"></div></div>
+        <div class="form-group"><label>المحافظة</label><select class="form-control" name="city" id="create-city-select"></select><div class="field-error" id="create-error-city"></div></div>
+        <div class="form-group"><label>الجنس المستهدف</label><select class="form-control" name="gender"><option value="الكل">الجميع</option><option value="ذكر">ذكور</option><option value="أنثى">إناث</option></select></div>
+        <div class="form-group"><label>الحد الأدنى</label><input class="form-control" name="minParticipants" type="number" min="2" placeholder="اختياري"><div class="field-error" id="create-error-minParticipants"></div></div>
+        <div class="form-group"><label>الحد الأقصى</label><input class="form-control" name="maxParticipants" type="number" min="2"><div class="field-error" id="create-error-maxParticipants"></div></div>
+        <div class="form-group full"><button class="btn btn-primary" id="create-initiative-submit-btn" type="submit">إرسال للمراجعة</button></div>
+      </form>
+    </section>
+  </section>
+</main>
+
+<div class="modal-overlay" id="attendance-modal"><div class="modal-card"><div class="modal-title-v2">الحضور والغياب</div><div class="modal-subtitle-v2" id="attendance-modal-name"></div><div class="attendance-list-wrap" id="attendance-list" style="margin-top:1rem"><div class="spinner"></div></div><div class="create-actions" style="margin-top:1rem"><button class="secondary-link-btn full-width" onclick="closeModal('attendance-modal')">إغلاق</button></div></div></div>
+<div class="modal-overlay" id="my-edit-initiative-modal"><div class="modal-card"><div class="modal-title-v2">تعديل المبادرة</div><div class="modal-subtitle-v2">حدّث التفاصيل الأساسية بنفس تجربة هادئة وواضحة، وسيتم حفظ التعديلات مباشرة.</div><form id="my-edit-initiative-form" class="create-form" style="margin-top:1rem"><div id="my-edit-fields"></div><div class="create-actions"><button class="btn btn-primary full-width" type="submit">حفظ التعديلات</button><button class="secondary-link-btn" type="button" onclick="closeModal('my-edit-initiative-modal')">إلغاء</button></div></form></div></div>
+<div class="modal-overlay" id="initiative-detail-modal"><div class="modal-card dashboard-initiative-modal"><div id="initiative-detail-content"></div></div></div>
+<div class="modal-overlay" id="action-confirm-modal"><div class="modal-card" style="width:min(520px,calc(100% - 24px))"><div class="modal-title-v2" id="action-confirm-title">تأكيد الإجراء</div><div class="modal-subtitle-v2" id="action-confirm-message">هل تريد المتابعة؟</div><div id="action-confirm-input-wrap" style="display:none;gap:8px;margin-top:12px"><label for="action-confirm-input" class="field-label" id="action-confirm-label">اكتب النص المطلوب</label><input id="action-confirm-input" class="form-control" autocomplete="off" /></div><div class="create-actions" style="margin-top:1rem"><button class="btn btn-primary full-width" type="button" id="action-confirm-submit-btn">تأكيد</button><button class="secondary-link-btn" type="button" onclick="closeActionConfirmModal()">إلغاء</button></div></div></div>
+
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>function onPageLoad(){ initDashboard(); }</script>
+</body>
+</html>

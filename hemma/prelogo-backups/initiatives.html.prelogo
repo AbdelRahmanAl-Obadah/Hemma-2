@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>المبادرات - همة</title>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <style>
+    .initiatives-v2 {
+      background:
+        radial-gradient(circle at top right, rgba(45, 122, 107, 0.12), transparent 28%),
+        radial-gradient(circle at top left, rgba(245, 166, 35, 0.08), transparent 18%),
+        linear-gradient(180deg, #f7fbf8 0%, #eef5f0 35%, #f7fbf8 100%);
+    }
+
+    [data-theme="dark"] .initiatives-v2 {
+      background:
+        radial-gradient(circle at top right, rgba(127, 213, 204, 0.08), transparent 24%),
+        radial-gradient(circle at top left, rgba(245, 166, 35, 0.06), transparent 18%),
+        linear-gradient(180deg, #0d1915 0%, #12211b 35%, #0d1915 100%);
+    }
+
+    .initiatives-shell {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 0 1rem 3rem;
+    }
+
+    .initiatives-topbar {
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(45, 122, 107, 0.08), rgba(255, 255, 255, 0.76));
+    }
+
+    [data-theme="dark"] .initiatives-topbar {
+      background: linear-gradient(180deg, rgba(45, 122, 107, 0.12), rgba(26, 46, 34, 0.74));
+    }
+
+    .initiatives-topbar-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      gap: 1.5rem;
+      padding: 2rem 1rem;
+    }
+
+    @media (min-width: 768px) {
+      .initiatives-topbar-inner {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+        gap: 2rem;
+      }
+    }
+
+    .initiatives-headline h1 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 2rem;
+      font-weight: 900;
+      line-height: 1.2;
+      margin: 0;
+    }
+
+    .initiatives-headline p {
+      margin-top: 0.4rem;
+      color: var(--text-muted);
+      font-size: 0.95rem;
+    }
+
+    .initiative-create-card {
+      position: relative;
+      overflow: hidden;
+      width: min(100%, 20rem);
+      border-radius: 1.5rem;
+      border: 2px solid rgba(26, 107, 60, 0.2);
+      background: rgba(255, 255, 255, 0.86);
+      padding: 1rem;
+      box-shadow: 0 18px 40px rgba(26, 107, 60, 0.12);
+      backdrop-filter: blur(14px);
+    }
+
+    [data-theme="dark"] .initiative-create-card {
+      background: rgba(26, 46, 34, 0.8);
+      box-shadow: 0 18px 40px rgba(0, 0, 0, 0.22);
+    }
+
+    .initiative-create-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at top left, rgba(245, 166, 35, 0.14), transparent 50%);
+      pointer-events: none;
+    }
+
+    .initiative-create-card > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .initiative-create-card .eyebrow {
+      color: var(--accent-dark);
+      font-size: 0.75rem;
+      font-weight: 800;
+      letter-spacing: 0.08em;
+    }
+
+    .initiative-create-card p {
+      margin: 0.5rem 0 0.9rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      line-height: 1.7;
+    }
+
+    .initiatives-tabs {
+      border-bottom: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .initiatives-tabs-inner {
+      max-width: 1380px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      gap: 0;
+    }
+
+    .initiative-tab {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      border: 0;
+      border-bottom: 2px solid transparent;
+      background: transparent;
+      padding: 0.95rem 1.2rem;
+      color: var(--text-muted);
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .initiative-tab.active {
+      border-bottom-color: var(--primary);
+      color: var(--primary);
+    }
+
+    .tab-badge {
+      border-radius: 999px;
+      padding: 0.18rem 0.5rem;
+      font-size: 0.7rem;
+      font-weight: 800;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+    }
+
+    .initiative-tab.active .tab-badge {
+      background: rgba(26, 107, 60, 0.12);
+      color: var(--primary);
+    }
+
+    .browse-section {
+      padding-top: 2rem;
+    }
+
+    .browse-overview {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .overview-card {
+      border: 1px solid var(--border);
+      border-radius: 1.3rem;
+      background: rgba(255,255,255,0.8);
+      padding: 1rem 1.1rem;
+      box-shadow: 0 10px 24px rgba(26,107,60,0.05);
+    }
+
+    [data-theme="dark"] .overview-card {
+      background: rgba(26,46,34,0.8);
+      box-shadow: 0 10px 24px rgba(0,0,0,0.18);
+    }
+
+    .overview-card strong {
+      display:block;
+      color: var(--text);
+      font-size: 1.45rem;
+      font-family: 'Cairo', sans-serif;
+      font-weight: 900;
+      line-height: 1;
+      margin-bottom: 0.35rem;
+    }
+
+    .overview-card span {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+
+    .filter-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 0.85rem;
+      border: 1px solid var(--border);
+      border-radius: 1.35rem;
+      background: rgba(255, 255, 255, 0.84);
+      padding: 1rem 1.15rem;
+      box-shadow: 0 10px 26px rgba(26, 107, 60, 0.06);
+      backdrop-filter: blur(12px);
+      margin-bottom: 1rem;
+    }
+
+    [data-theme="dark"] .filter-toolbar {
+      background: rgba(26, 46, 34, 0.84);
+      box-shadow: 0 10px 26px rgba(0, 0, 0, 0.2);
+    }
+
+    .filter-group {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+    }
+
+    .filter-group-label {
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .initiatives-select {
+      appearance: none;
+      min-height: 40px;
+      border-radius: 0.8rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      padding: 0.55rem 0.8rem;
+      color: var(--text);
+      font-size: 0.85rem;
+      font-family: inherit;
+    }
+
+    .filter-divider {
+      width: 1px;
+      height: 1.5rem;
+      background: var(--border);
+    }
+
+    .segmented {
+      display: flex;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      border-radius: 0.8rem;
+      background: var(--bg);
+    }
+
+    .segment-btn {
+      border: 0;
+      background: transparent;
+      padding: 0.55rem 0.8rem;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+    }
+
+    .segment-btn.active {
+      background: var(--primary);
+      color: white;
+    }
+
+    .filter-clear {
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 0.35rem 0.55rem;
+      border-radius: 0.7rem;
+    }
+
+    .filter-clear:hover {
+      background: var(--bg-secondary);
+      color: var(--text);
+    }
+
+    .filter-result-count {
+      margin-inline-start: auto;
+      color: var(--text-muted);
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .explorer-surface {
+      display: flex;
+      height: 700px;
+      overflow: hidden;
+      border-radius: 1.5rem;
+      border: 1px solid var(--border);
+      box-shadow: 0 16px 40px rgba(26, 107, 60, 0.08);
+      background: var(--card);
+    }
+
+    .initiative-panel {
+      width: 29rem;
+      flex-shrink: 0;
+      overflow-y: auto;
+      border-inline-end: 1px solid var(--border);
+      background: var(--card);
+    }
+
+    .initiative-panel-state {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 0.8rem;
+      min-height: 100%;
+      padding: 2rem;
+      text-align: center;
+    }
+
+    .panel-state-icon {
+      width: 3.5rem;
+      height: 3.5rem;
+      border-radius: 1rem;
+      display: grid;
+      place-items: center;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+
+    .panel-state-title {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 800;
+    }
+
+    .panel-state-text {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      line-height: 1.8;
+      max-width: 17rem;
+    }
+
+    .panel-city-header,
+    .panel-detail-header {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      background: rgba(45, 122, 107, 0.06);
+    }
+
+    .panel-city-title,
+    .panel-detail-city {
+      color: var(--text);
+      font-size: 0.88rem;
+      font-weight: 800;
+    }
+
+    .panel-city-count {
+      margin-inline-start: auto;
+      border-radius: 999px;
+      background: rgba(26, 107, 60, 0.12);
+      color: var(--primary);
+      padding: 0.18rem 0.5rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .panel-list {
+      list-style: none;
+      margin: 0;
+      padding: 0;
+    }
+
+    .panel-list-item + .panel-list-item {
+      border-top: 1px solid var(--border);
+    }
+
+    .panel-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 0.75rem;
+      padding: 1rem;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(45, 122, 107, 0.08), rgba(255,255,255,0));
+    }
+
+    .panel-toolbar h3 {
+      color: var(--text);
+      font-size: 0.95rem;
+      font-weight: 900;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .panel-toolbar p {
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      margin-top: 0.2rem;
+    }
+
+    .panel-initiative-btn {
+      width: 100%;
+      border: 0;
+      background: transparent;
+      padding: 1rem;
+      text-align: right;
+    }
+
+    .panel-initiative-btn:hover {
+      background: rgba(45, 122, 107, 0.06);
+    }
+
+    .panel-initiative-top {
+      display: flex;
+      align-items: start;
+      justify-content: space-between;
+      gap: 0.5rem;
+    }
+
+    .panel-initiative-name {
+      color: var(--text);
+      font-size: 0.9rem;
+      font-weight: 800;
+      line-height: 1.6;
+    }
+
+    .panel-initiative-meta {
+      margin-top: 0.6rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.8rem;
+      color: var(--text-muted);
+      font-size: 0.73rem;
+      font-weight: 700;
+    }
+
+    .panel-back-btn,
+    .panel-open-link {
+      border: 0;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+
+    .panel-open-link {
+      margin-inline-start: auto;
+      border-radius: 0.7rem;
+      padding: 0.35rem 0.55rem;
+      background: var(--bg-secondary);
+    }
+
+    .initiative-detail {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1rem;
+    }
+
+    .detail-title {
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1.6;
+    }
+
+    .joined-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      width: fit-content;
+      margin-top: 0.4rem;
+      border-radius: 999px;
+      background: rgba(26, 107, 60, 0.12);
+      color: var(--primary);
+      padding: 0.25rem 0.55rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+    }
+
+    .detail-description {
+      color: var(--text-muted);
+      font-size: 0.8rem;
+      line-height: 1.85;
+    }
+
+    .detail-meta-stack {
+      display: grid;
+      gap: 0.85rem;
+      color: var(--text-muted);
+      font-size: 0.76rem;
+      font-weight: 700;
+    }
+
+    .detail-meta-row {
+      display: flex;
+      gap: 0.55rem;
+      align-items: start;
+    }
+
+    .detail-progress-track {
+      margin-top: 0.45rem;
+      width: 100%;
+      height: 0.42rem;
+      overflow: hidden;
+      border-radius: 999px;
+      background: var(--bg-secondary);
+    }
+
+    .detail-progress-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--primary), var(--accent));
+    }
+
+    .detail-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+      padding-top: 0.85rem;
+      border-top: 1px solid var(--border);
+    }
+
+    .detail-tag {
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      padding: 0.25rem 0.6rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+    }
+
+    .detail-actions {
+      margin-top: 0.2rem;
+    }
+
+    .warning-card {
+      display: grid;
+      gap: 0.8rem;
+      border-radius: 1rem;
+      border: 1px solid #f3d38d;
+      background: #fff6df;
+      padding: 0.85rem;
+    }
+
+    [data-theme="dark"] .warning-card {
+      border-color: #705821;
+      background: rgba(93, 70, 18, 0.2);
+    }
+
+    .warning-card p {
+      color: #8d6300;
+      font-size: 0.76rem;
+      line-height: 1.8;
+    }
+
+    [data-theme="dark"] .warning-card p {
+      color: #f0d38c;
+    }
+
+    .warning-actions,
+    .detail-action-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 0.55rem;
+    }
+
+    .notice-text {
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.7rem;
+      line-height: 1.8;
+    }
+
+    #map {
+      width: 100%;
+      height: 100%;
+    }
+
+    .browse-section.active {
+      display: block;
+    }
+
+    .history-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 1rem;
+      margin-bottom: 1rem;
+    }
+
+    .history-header h2 {
+      color: var(--text);
+      font-size: 1.1rem;
+      font-weight: 900;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .history-header span {
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      font-weight: 700;
+    }
+
+    .history-list {
+      display: grid;
+      gap: 1rem;
+    }
+
+    .history-card {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      padding: 1.1rem;
+      border-radius: 1.4rem;
+      border: 1px solid var(--border);
+      background: rgba(255, 255, 255, 0.82);
+      box-shadow: 0 10px 24px rgba(26, 107, 60, 0.05);
+    }
+
+    [data-theme="dark"] .history-card {
+      background: rgba(26, 46, 34, 0.82);
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
+    }
+
+    @media (min-width: 760px) {
+      .history-card {
+        flex-direction: row;
+        align-items: start;
+        gap: 1.2rem;
+      }
+    }
+
+    .history-icon {
+      width: 3rem;
+      height: 3rem;
+      flex-shrink: 0;
+      display: grid;
+      place-items: center;
+      border-radius: 1rem;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+      font-size: 1.15rem;
+      font-weight: 900;
+    }
+
+    .history-icon.attended {
+      background: rgba(26, 107, 60, 0.12);
+      color: var(--primary);
+    }
+
+    .history-body {
+      min-width: 0;
+      flex: 1;
+    }
+
+    .history-top {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: start;
+      gap: 0.7rem;
+    }
+
+    .history-title {
+      color: var(--text);
+      font-size: 0.98rem;
+      font-weight: 900;
+    }
+
+    .history-meta {
+      margin-top: 0.7rem;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.9rem;
+      color: var(--text-muted);
+      font-size: 0.74rem;
+      font-weight: 700;
+    }
+
+    .status-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+      border-radius: 999px;
+      padding: 0.24rem 0.55rem;
+      font-size: 0.68rem;
+      font-weight: 800;
+      background: var(--bg-secondary);
+      color: var(--text-muted);
+    }
+
+    .status-chip.attended {
+      background: rgba(26, 107, 60, 0.12);
+      color: var(--primary);
+    }
+
+    .history-actions {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      flex-shrink: 0;
+    }
+
+    .empty-state-v2 {
+      margin-top: 1rem;
+      padding: 3rem 1.2rem;
+      text-align: center;
+      border: 1px dashed rgba(26, 107, 60, 0.28);
+      border-radius: 1.5rem;
+      background: rgba(255, 255, 255, 0.7);
+    }
+
+    [data-theme="dark"] .empty-state-v2 {
+      background: rgba(26, 46, 34, 0.62);
+    }
+
+    .empty-state-v2 .empty-icon {
+      width: 4rem;
+      height: 4rem;
+      margin: 0 auto;
+      border-radius: 1.2rem;
+      display: grid;
+      place-items: center;
+      background: rgba(26, 107, 60, 0.1);
+      color: var(--primary);
+      font-size: 1.4rem;
+      font-weight: 900;
+    }
+
+    .empty-state-v2 h3 {
+      margin-top: 1rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 900;
+    }
+
+    .empty-state-v2 p {
+      max-width: 24rem;
+      margin: 0.6rem auto 0;
+      color: var(--text-muted);
+      font-size: 0.82rem;
+      line-height: 1.8;
+    }
+
+    .modal-card {
+      background: var(--card);
+      border-radius: 1.5rem;
+      width: min(100%, 40rem);
+      max-height: 90vh;
+      overflow-y: auto;
+      box-shadow: var(--shadow-lg);
+      padding: 1.4rem;
+    }
+
+    .modal-title-v2 {
+      display: flex;
+      align-items: center;
+      gap: 0.55rem;
+      color: var(--text);
+      font-size: 1.05rem;
+      font-weight: 900;
+      font-family: 'Cairo', sans-serif;
+    }
+
+    .modal-subtitle-v2 {
+      margin-top: 0.5rem;
+      color: var(--text-muted);
+      font-size: 0.84rem;
+      line-height: 1.8;
+    }
+
+    .create-form {
+      margin-top: 1.1rem;
+      display: grid;
+      gap: 1rem;
+    }
+
+    .create-grid-2,
+    .create-grid-3 {
+      display: grid;
+      gap: 0.8rem;
+    }
+
+    .create-grid-2 {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    .create-grid-3 {
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .field-label {
+      display: block;
+      margin-bottom: 0.4rem;
+      color: var(--text);
+      font-size: 0.82rem;
+      font-weight: 800;
+    }
+
+    .field-error {
+      margin-top: 0.35rem;
+      color: var(--danger);
+      font-size: 0.72rem;
+      font-weight: 700;
+    }
+
+    .textarea-control {
+      min-height: 92px;
+      resize: vertical;
+    }
+
+    .create-actions {
+      display: flex;
+      gap: 0.75rem;
+      padding-top: 0.2rem;
+    }
+
+    .secondary-link-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.35rem;
+      border-radius: 0.85rem;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      padding: 0.72rem 0.95rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+    }
+
+    .full-width {
+      width: 100%;
+    }
+
+    .hide {
+      display: none !important;
+    }
+
+    @media (max-width: 980px) {
+      .explorer-surface {
+        flex-direction: column;
+        height: auto;
+      }
+
+      .initiative-panel {
+        width: 100%;
+        max-height: 30rem;
+        border-inline-end: 0;
+        border-bottom: 1px solid var(--border);
+      }
+
+      #map {
+        min-height: 420px;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .filter-toolbar {
+        align-items: stretch;
+      }
+
+      .browse-overview {
+        grid-template-columns: 1fr;
+      }
+
+      .filter-group {
+        flex-wrap: wrap;
+      }
+
+      .filter-divider {
+        display: none;
+      }
+
+      .filter-result-count {
+        width: 100%;
+        margin-inline-start: 0;
+      }
+
+      .create-grid-2,
+      .create-grid-3 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body class="initiatives-v2">
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      <span class="logo-icon">H</span>
+      همة
+    </a>
+    <nav class="nav">
+      <a href="index.html">الرئيسية</a>
+      <a href="initiatives.html" class="active">المبادرات</a>
+      <a href="redeem.html">استبدال النقاط</a>
+    </nav>
+    <div class="header-actions">
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">داكن</button>
+      <button class="mobile-nav-toggle" onclick="toggleMobileNav()">القائمة</button>
+      <div id="header-auth" style="display:flex;gap:8px;align-items:center">
+        <a href="signin.html" class="btn btn-secondary btn-sm">تسجيل الدخول</a>
+        <a href="signup.html" class="btn btn-primary btn-sm">إنشاء حساب</a>
+      </div>
+    </div>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav">
+    <a href="index.html">الرئيسية</a>
+    <a href="initiatives.html" class="active">المبادرات</a>
+    <a href="redeem.html">استبدال النقاط</a>
+  </nav>
+</header>
+
+<div class="initiatives-topbar">
+  <div class="initiatives-topbar-inner">
+    <div class="initiatives-headline">
+      <h1>المبادرات</h1>
+      <p>استكشف مبادرات تطوعية أو أنشئ مبادرتك الخاصة</p>
+    </div>
+
+    <div class="initiative-create-card">
+      <div class="eyebrow">ابدأ التأثير</div>
+      <p>أنشئ مبادرة جديدة وأرسلها للمراجعة، ومع الموافقة تبدأ رحلتها على المنصة.</p>
+      <button type="button" class="btn btn-primary full-width" id="open-create-initiative-btn">إنشاء مبادرة</button>
+    </div>
+  </div>
+</div>
+
+<div class="initiatives-tabs">
+  <div class="initiatives-tabs-inner">
+    <button class="initiative-tab active" id="tab-browse" type="button">
+      <span>المبادرات</span>
+      <span class="tab-badge" id="tab-browse-count">0</span>
+    </button>
+    <a class="initiative-tab" id="tab-mine" href="my-initiatives.html">
+      <span>مشاركاتي</span>
+      <span class="tab-badge" id="tab-mine-count">0</span>
+    </a>
+  </div>
+</div>
+
+<main class="initiatives-shell">
+  <section class="browse-section active" id="browse-section">
+    <div class="browse-overview">
+      <div class="overview-card">
+        <strong id="overview-total-initiatives">0</strong>
+        <span>مبادرات معتمدة ظاهرة على الصفحة الآن</span>
+      </div>
+      <div class="overview-card">
+        <strong id="overview-open-initiatives">0</strong>
+        <span>فرص ما زالت مفتوحة للانضمام</span>
+      </div>
+      <div class="overview-card">
+        <strong id="overview-cities">0</strong>
+        <span>مدن ممثلة حالياً على الخريطة</span>
+      </div>
+    </div>
+
+    <div class="filter-toolbar">
+      <div class="filter-group">
+        <span class="filter-group-label">المحافظة</span>
+        <select class="initiatives-select" id="filter-city">
+          <option value="">الكل</option>
+        </select>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <div class="filter-group">
+        <span class="filter-group-label">الجنس</span>
+        <div class="segmented" id="gender-segments">
+          <button class="segment-btn active" data-gender="all" type="button">الجميع</button>
+          <button class="segment-btn" data-gender="ذكر" type="button">ذكور</button>
+          <button class="segment-btn" data-gender="أنثى" type="button">إناث</button>
+        </div>
+      </div>
+
+      <div class="filter-divider"></div>
+
+      <div class="filter-group">
+        <span class="filter-group-label">البحث</span>
+        <input type="text" class="form-control" id="filter-search" placeholder="ابحث عن مبادرة"/>
+      </div>
+
+      <button type="button" class="filter-clear hide" id="clear-filters-btn">مسح الفلاتر</button>
+      <span class="filter-result-count" id="filter-results-count">0 مبادرة</span>
+    </div>
+
+    <div class="explorer-surface">
+      <aside class="initiative-panel" id="initiative-panel"></aside>
+      <div style="min-width:0;flex:1">
+        <div id="map"></div>
+      </div>
+    </div>
+
+    <div class="empty-state-v2 hide" id="browse-empty-state">
+      <div class="empty-icon">H</div>
+      <h3>لا توجد مبادرات معتمدة حالياً</h3>
+      <p>كن أول من يطلق مبادرة جديدة. يمكنك إنشاء مبادرتك الآن وإرسالها للمراجعة.</p>
+      <button type="button" class="btn btn-primary" id="open-create-from-empty-btn" style="margin-top:1rem">إنشاء مبادرة الآن</button>
+    </div>
+  </section>
+
+</main>
+
+<div class="modal-overlay" id="join-modal">
+  <div class="modal-card">
+    <div class="modal-title-v2">تأكيد الانضمام</div>
+    <div class="modal-subtitle-v2">
+      هل تريد الانضمام إلى <strong id="join-modal-name"></strong>؟
+    </div>
+    <div class="warning-card" style="margin-top:1rem">
+      <p>ستكسب نقاط الحضور بعد تسجيل مشاركتك، وعند الانسحاب لاحقاً قد يتم خصم جزء من رصيدك حسب سياسة المنصة.</p>
+    </div>
+    <div class="create-actions" style="margin-top:1rem">
+      <button class="btn btn-primary full-width" id="confirm-join-btn" onclick="confirmJoin()">تأكيد الانضمام</button>
+      <button class="secondary-link-btn" type="button" onclick="closeModal('join-modal')">إلغاء</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="create-initiative-modal">
+  <div class="modal-card">
+    <div class="modal-title-v2">إنشاء مبادرة جديدة</div>
+    <div class="modal-subtitle-v2">ستُرسل مبادرتك للمراجعة قبل نشرها، وعند اعتمادها تصبح متاحة لباقي المتطوعين.</div>
+
+    <form class="create-form" id="create-initiative-form">
+      <div>
+        <label class="field-label">اسم المبادرة *</label>
+        <input type="text" class="form-control" name="name" placeholder="مثال: تنظيف شاطئ العقبة"/>
+        <div class="field-error" id="create-error-name"></div>
+      </div>
+
+      <div>
+        <label class="field-label">الوصف</label>
+        <textarea class="form-control textarea-control" name="description" placeholder="صِف هدف المبادرة وما سيقوم به الفريق..."></textarea>
+        <div class="field-error" id="create-error-description"></div>
+      </div>
+
+      <div class="create-grid-2">
+        <div>
+          <label class="field-label">تاريخ البداية *</label>
+          <input type="datetime-local" class="form-control" name="startsAt"/>
+          <div class="field-error" id="create-error-startsAt"></div>
+        </div>
+        <div>
+          <label class="field-label">المحافظة *</label>
+          <select class="form-control" name="city" id="create-city-select"></select>
+          <div class="field-error" id="create-error-city"></div>
+        </div>
+      </div>
+
+      <div class="create-grid-2">
+        <div>
+          <label class="field-label">الحد الأدنى للمشاركين</label>
+          <input type="number" min="2" class="form-control" name="minParticipants" placeholder="اختياري"/>
+          <div class="field-error" id="create-error-minParticipants"></div>
+        </div>
+        <div>
+          <label class="field-label">الحد الأقصى للمشاركين *</label>
+          <input type="number" min="2" class="form-control" name="maxParticipants" placeholder="مثال: 30"/>
+          <div class="field-error" id="create-error-maxParticipants"></div>
+        </div>
+      </div>
+
+      <div class="create-grid-3">
+        <div>
+          <label class="field-label">الجنس المستهدف</label>
+          <select class="form-control" name="gender">
+            <option value="الكل">الجميع</option>
+            <option value="ذكر">ذكور</option>
+            <option value="أنثى">إناث</option>
+          </select>
+        </div>
+        <div>
+          <label class="field-label">الحد الأدنى للعمر</label>
+          <input type="number" min="13" max="100" class="form-control" name="minAge" placeholder="13"/>
+          <div class="field-error" id="create-error-minAge"></div>
+        </div>
+        <div>
+          <label class="field-label">نقاط الحضور</label>
+          <input type="number" min="0" max="1000" class="form-control" name="creationPoints" value="30"/>
+          <div class="field-error" id="create-error-creationPoints"></div>
+        </div>
+      </div>
+
+      <div class="create-actions">
+        <button type="submit" class="btn btn-primary full-width" id="create-initiative-submit-btn">إرسال للمراجعة</button>
+        <button type="button" class="secondary-link-btn" onclick="closeModal('create-initiative-modal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="footer-home" style="padding-top:2rem">
+  <div class="footer-mark">H</div>
+  <p>همة - منصة العمل التطوعي في الأردن</p>
+  <p>© جميع الحقوق محفوظة 2026</p>
+</footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  function onPageLoad() {
+    initInitiativesPage();
+  }
+</script>
+</body>
+</html>

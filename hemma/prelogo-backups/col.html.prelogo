@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الشراكات - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .collab-page { min-height: 100vh; }
+    .collab-shell { width: min(1380px, calc(100% - 32px)); margin: 0 auto; padding: 2rem 0 3rem; display: grid; gap: 1rem; }
+    .collab-hero { border-radius: 2rem; min-height: 460px; padding: 2rem; display: grid; grid-template-columns: minmax(0,1fr) minmax(300px,.7fr); gap: 1rem; align-items: center; color: white; background: linear-gradient(135deg, rgba(15,39,35,.98), rgba(37,88,79,.94)), radial-gradient(circle at 20% 80%, rgba(207,160,97,.16), transparent 32%); box-shadow: 0 22px 58px rgba(23,57,51,.16); overflow: hidden; }
+    .collab-hero h1 { font-family: 'Cairo', sans-serif; font-size: clamp(2.2rem,5vw,4.4rem); line-height: 1.08; }
+    .collab-hero p { color: rgba(255,255,255,.8); line-height: 2; margin-top: 1rem; max-width: 760px; }
+    .collab-summary-card { border: 1px solid rgba(255,255,255,.16); background: rgba(255,255,255,.1) !important; color: white; border-radius: 1.5rem; padding: 1.4rem; backdrop-filter: blur(16px); }
+    .collab-sections { display: grid; gap: 1rem; }
+    .rail-section { border: 1px solid var(--border); border-radius: 1.45rem; background: rgba(255,254,251,.84); padding: 1.2rem; box-shadow: 0 14px 32px rgba(23,57,51,.07); }
+    .rail-head { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; border-bottom: 1px solid var(--border); padding-bottom: 1rem; margin-bottom: 1rem; }
+    .rail-head h2 { font-family: 'Cairo', sans-serif; }
+    .partner-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px,1fr)); gap: .8rem; }
+    .partner-card { border: 1px solid var(--border); border-radius: 1.2rem; padding: 1rem; background: var(--card); }
+    .partner-card strong { font-family: 'Cairo', sans-serif; }
+    .partner-card p { color: var(--text-muted); font-size: .88rem; line-height: 1.8; margin-top: .35rem; }
+    @media (max-width: 900px) { .collab-hero { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body class="collab-page">
+<header class="header"><div class="header-inner"><a href="index.html" class="logo"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span>همة</a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html" class="active">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">داكن</button><button class="mobile-nav-toggle" onclick="toggleMobileNav()">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html" class="active">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+<main class="collab-shell">
+  <section class="collab-hero"><div><div class="about-kicker">شراكات همة</div><h1>شبكة شركاء تدعم أثر المبادرات</h1><p>نجمع المؤسسات التعليمية والمجتمعية والقطاع الخاص حول مسار تطوعي موثق، واضح، وقابل للقياس.</p><div class="about-actions"><a href="initiatives.html" class="btn btn-primary">شاهد المبادرات</a><a href="about.html" class="btn btn-secondary">عن المنصة</a></div></div><aside class="collab-summary-card"><h2>ماذا نقدم للشركاء؟</h2><p>ظهور واضح للمبادرات، قياس للحضور، وسجل أثر يساعد المؤسسات على دعم الشباب بطريقة منظمة.</p></aside></section>
+  <section class="collab-sections">
+    <article class="rail-section"><div class="rail-head"><div><h2>التعليم والجامعات</h2><p class="text-muted">ربط الطلبة بفرص تطوعية موثقة.</p></div></div><div class="partner-grid"><div class="partner-card"><strong>جامعات ومدارس</strong><p>مبادرات خدمة مجتمعية وتوثيق للحضور والنقاط.</p></div><div class="partner-card"><strong>نوادي طلابية</strong><p>تنظيم فرق تطوعية حسب المدينة والاهتمام.</p></div></div></article>
+    <article class="rail-section"><div class="rail-head"><div><h2>المؤسسات المجتمعية</h2><p class="text-muted">إطلاق مبادرات ميدانية قابلة للمتابعة.</p></div></div><div class="partner-grid"><div class="partner-card"><strong>جمعيات محلية</strong><p>إدارة فرص التطوع وتسجيل المشاركين.</p></div><div class="partner-card"><strong>فرق شبابية</strong><p>مساحة للوصول إلى متطوعين مهتمين.</p></div></div></article>
+    <article class="rail-section"><div class="rail-head"><div><h2>القطاع الخاص</h2><p class="text-muted">مكافآت وشراكات أثر اجتماعي.</p></div></div><div class="partner-grid"><div class="partner-card"><strong>مكافآت</strong><p>تحويل النقاط إلى حوافز حقيقية للمتطوعين.</p></div><div class="partner-card"><strong>رعاية مبادرات</strong><p>دعم مبادرات تخدم المجتمع المحلي.</p></div></div></article>
+  </section>
+</main>
+<footer class="site-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>شراكات من أجل أثر تطوعي أوضح.</p></div><div><h4>روابط</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>ابدأ</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a></div></div></div><div class="site-footer-bottom"><span>همة</span><span>© 2026</span></div></footer>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="app.js"></script>
+</body>
+</html>

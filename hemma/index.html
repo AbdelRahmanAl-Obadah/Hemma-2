@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>همة - منصة العمل التطوعي</title>
+  <meta name="description" content="همة منصة شبابية للعمل التطوعي في الأردن. انضم إلى مبادرات، اكسب نقاطاً بالحضور، وأنشئ مبادرتك الخاصة."/>
+  <link rel="stylesheet" href="styles.css"/>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"/>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <style>
+    .home-page {
+      background: var(--bg);
+    }
+
+    .home-main {
+      flex: 1;
+    }
+
+    .home-container {
+      width: min(1280px, calc(100% - 32px));
+      margin-inline: auto;
+      display: grid;
+      justify-items: center;
+      row-gap: 24px;
+    }
+
+    .home-hero {
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+    }
+
+    .home-hero::before {
+      display: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      padding: 86px 0 88px;
+      text-align: center;
+    }
+
+    .hero-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border: 1px solid rgba(45,122,107,.18);
+      background: color-mix(in srgb, var(--primary) 9%, var(--card));
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 8px 16px;
+      font-size: .8rem;
+      font-weight: 900;
+    }
+
+    .hero-title {
+      max-width: 820px;
+      margin: 22px auto 0;
+      font-family: 'Cairo', sans-serif;
+      font-size: clamp(2.45rem, 5vw, 4.7rem);
+      line-height: 1.12;
+      letter-spacing: 0;
+      color: var(--text);
+    }
+
+    .hero-title span {
+      color: var(--primary);
+    }
+
+    .hero-copy {
+      max-width: 760px;
+      margin: 18px auto 0;
+      color: var(--text-muted);
+      font-size: 1.04rem;
+      line-height: 1.95;
+    }
+
+    .hero-actions {
+      margin-top: 34px;
+      display: flex;
+      justify-content: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .home-btn-primary,
+    .home-btn-secondary {
+      min-height: 48px;
+      padding: 12px 24px;
+      border-radius: 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      font-size: .98rem;
+      font-weight: 900;
+      border: 1px solid transparent;
+      transition: transform var(--transition), box-shadow var(--transition), background var(--transition), border-color var(--transition);
+    }
+
+    .home-btn-primary {
+      background: var(--primary);
+      color: #fff;
+      box-shadow: 0 12px 26px rgba(37,88,79,.18);
+    }
+
+    .home-btn-secondary {
+      background: color-mix(in srgb, var(--card) 92%, transparent);
+      color: var(--text);
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 24px rgba(23,57,51,.05);
+    }
+
+    .home-btn-primary:hover,
+    .home-btn-secondary:hover {
+      transform: translateY(-2px);
+    }
+
+    .hero-note {
+      margin-top: 18px;
+      color: var(--text-light);
+      font-size: .82rem;
+      font-weight: 700;
+    }
+
+    .home-stats {
+      border-bottom: 1px solid var(--border);
+      background: color-mix(in srgb, var(--card) 62%, transparent);
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 18px;
+      padding: 24px 0 30px;
+      width: min(1160px, 100%);
+      margin-inline: auto;
+      align-items: stretch;
+    }
+
+    .stat-card {
+      display: grid;
+      grid-template-columns: auto 1fr;
+      align-items: center;
+      gap: 14px;
+      text-align: right;
+      border: 1px solid var(--border);
+      background: rgba(255,254,251,.94);
+      border-radius: 1.35rem;
+      padding: 16px 18px;
+      min-height: 102px;
+      box-shadow: 0 12px 26px rgba(23,57,51,.055);
+    }
+
+    .stat-icon {
+      width: 42px;
+      height: 42px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      background: color-mix(in srgb, var(--primary) 10%, var(--card));
+      color: var(--primary);
+      font-weight: 900;
+      justify-self: end;
+      flex-shrink: 0;
+    }
+
+    .stat-copy {
+      display: grid;
+      justify-items: end;
+      align-content: center;
+      gap: 4px;
+      min-width: 0;
+    }
+
+    .stat-value {
+      font-family: 'Cairo', sans-serif;
+      font-size: 2rem;
+      line-height: 1;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .stat-label {
+      color: var(--text-muted);
+      font-size: .78rem;
+      font-weight: 700;
+      line-height: 1.4;
+    }
+
+    .home-section {
+      padding: 56px 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .home-section:nth-of-type(odd) {
+      background: transparent;
+    }
+
+    .section-head {
+      position: relative;
+      display: grid;
+      grid-template-columns: auto minmax(0, 1fr) auto;
+      align-items: center;
+      gap: 16px;
+      max-width: 980px;
+      min-height: 104px;
+      margin: 0 auto;
+      padding: 18px 22px;
+      text-align: center;
+      border: 1px solid color-mix(in srgb, var(--border) 78%, transparent);
+      border-radius: 1.45rem;
+      background: rgba(255,254,251,.84);
+      box-shadow: 0 14px 32px rgba(23,57,51,.07);
+      overflow: hidden;
+    }
+
+    .section-head::before {
+      display: none;
+    }
+
+    .section-copy {
+      position: relative;
+      z-index: 1;
+      max-width: 560px;
+      justify-self: center;
+    }
+
+    .section-tag {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-width: auto;
+      min-height: auto;
+      border: 1px solid color-mix(in srgb, var(--primary) 18%, var(--border));
+      background: color-mix(in srgb, var(--card) 70%, transparent);
+      color: var(--primary);
+      border-radius: 999px;
+      padding: 8px 14px;
+      font-size: .78rem;
+      font-weight: 900;
+      line-height: 1.55;
+      box-shadow: none;
+    }
+
+    .section-head h2 {
+      margin-top: 0;
+      font-family: 'Dubai', 'Cairo', sans-serif;
+      font-size: clamp(1.45rem, 2.2vw, 2.2rem);
+      line-height: 1.25;
+      color: var(--text);
+    }
+
+    .section-head p {
+      margin-top: 10px;
+      color: var(--text-muted);
+      line-height: 1.85;
+      font-size: .92rem;
+    }
+
+    .section-action {
+      position: relative;
+      z-index: 1;
+      justify-self: end;
+      white-space: nowrap;
+    }
+
+    .home-container > .section-head + *,
+    .home-container > .home-results-summary + *,
+    .home-container > .home-trust-card,
+    .home-container > .home-cta {
+      margin-top: 0;
+    }
+
+    #initiatives .section-head,
+    #rewards .section-head {
+      margin-bottom: 2px;
+    }
+
+    #featured-initiatives,
+    #home-rewards-grid,
+    .home-trust-card,
+    .home-cta {
+      margin-top: 2px;
+    }
+
+    .initiative-shell {
+      display: grid;
+      gap: 22px;
+      justify-items: center;
+      width: 100%;
+    }
+
+    .home-filters {
+      display: grid;
+      grid-template-columns: minmax(220px, 1.35fr) repeat(2, minmax(150px, .55fr)) auto;
+      align-items: center;
+      gap: 12px;
+      width: min(980px, 100%);
+      border: 1px solid var(--border);
+      background: rgba(255,254,251,.84);
+      border-radius: 28px 16px 28px 16px;
+      padding: 14px;
+      box-shadow: 0 14px 32px rgba(23,57,51,.055);
+      backdrop-filter: blur(14px);
+      margin-inline: auto;
+    }
+
+    .home-filter-control {
+      width: 100%;
+      min-height: 46px;
+      border: 1px solid var(--border);
+      background: var(--bg);
+      color: var(--text);
+      border-radius: 14px;
+      padding: 0 16px;
+      font-family: inherit;
+      font-weight: 700;
+      outline: none;
+      transition: border-color var(--transition), box-shadow var(--transition), background var(--transition);
+    }
+
+    .home-filter-control:focus {
+      border-color: color-mix(in srgb, var(--primary) 42%, var(--border));
+      box-shadow: 0 0 0 4px color-mix(in srgb, var(--primary) 12%, transparent);
+    }
+
+    .home-results-summary {
+      justify-self: end;
+      white-space: nowrap;
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--primary) 8%, var(--bg));
+      padding: 9px 12px;
+      color: var(--text-muted);
+      font-size: .82rem;
+      font-weight: 800;
+      text-align: center;
+    }
+
+    .map-and-list {
+      width: min(1120px, 100%);
+      display: grid;
+      grid-template-columns: minmax(0, 1.18fr) minmax(380px, .82fr);
+      gap: 18px;
+      align-items: stretch;
+      margin-inline: auto;
+    }
+
+    .home-map-wrap {
+      position: relative;
+      overflow: hidden;
+      min-height: 430px;
+      border: 1px solid var(--border);
+      border-radius: 34px 18px 34px 18px;
+      background: rgba(255,254,251,.84);
+      box-shadow: 0 18px 42px rgba(23,57,51,.08);
+    }
+
+    #home-map {
+      width: 100%;
+      height: 100%;
+      min-height: 430px;
+    }
+
+    .home-map-panel {
+      position: absolute;
+      inset-inline-start: 18px;
+      top: 18px;
+      width: min(360px, calc(100% - 36px));
+      display: none;
+      gap: 12px;
+      border: 1px solid var(--border);
+      background: rgba(255,254,251,.92);
+      border-radius: 24px 12px 24px 12px;
+      padding: 16px;
+      box-shadow: 0 16px 34px rgba(23,57,51,.14);
+      backdrop-filter: blur(16px);
+      z-index: 450;
+    }
+
+    .home-map-panel.open {
+      display: grid;
+    }
+
+    .panel-chip-row {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .panel-chip {
+      border-radius: 999px;
+      background: rgba(45,122,107,.09);
+      color: var(--primary);
+      padding: 4px 9px;
+      font-size: .72rem;
+      font-weight: 900;
+    }
+
+    .home-map-panel h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.18rem;
+      color: var(--text);
+      text-align: center;
+    }
+
+    .home-map-panel p,
+    .home-map-panel div {
+      color: var(--text-muted);
+      font-size: .86rem;
+      line-height: 1.65;
+      text-align: center;
+    }
+
+    .panel-cta {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .side-list-card {
+      border: 1px solid var(--border);
+      border-radius: 34px 18px 34px 18px;
+      background: rgba(255,254,251,.84);
+      overflow: hidden;
+      box-shadow: 0 18px 42px rgba(23,57,51,.06);
+      display: flex;
+      flex-direction: column;
+      min-height: 430px;
+      text-align: center;
+    }
+
+    .side-list-head {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      background: rgba(37,88,79,.055);
+    }
+
+    .side-list-head h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.15rem;
+      color: var(--text);
+    }
+
+    .side-list-head p {
+      margin-top: 4px;
+      color: var(--text-muted);
+      font-size: .82rem;
+    }
+
+    .results-stack {
+      display: grid;
+      gap: 0;
+      overflow: auto;
+      flex: 1;
+    }
+
+    .result-pill {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      justify-items: center;
+      gap: 12px;
+      align-items: center;
+      padding: 17px 20px;
+      border-bottom: 1px solid var(--border);
+      background: transparent;
+      border-inline-start: 3px solid transparent;
+      text-align: center;
+      transition: background var(--transition), border-color var(--transition), transform var(--transition);
+    }
+
+    .result-pill:hover {
+      background: color-mix(in srgb, var(--primary) 6%, transparent);
+      border-inline-start-color: var(--primary);
+    }
+
+    .result-pill-copy {
+      display: grid;
+      gap: 4px;
+      justify-items: center;
+      min-width: 0;
+    }
+
+    .result-pill-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 34px;
+      border-radius: 999px;
+      border: 1px solid var(--border);
+      background: var(--card);
+      color: var(--primary);
+      padding: 0 12px;
+      font-size: .74rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .result-pill strong {
+      color: var(--text);
+      font-size: 1rem;
+      line-height: 1.45;
+    }
+
+    .result-pill span {
+      color: var(--text-muted);
+      font-size: .8rem;
+      font-weight: 800;
+    }
+
+    .featured-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      align-items: stretch;
+      width: min(1120px, 100%);
+      margin-inline: auto;
+    }
+
+    .featured-card-home {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      border: 1px solid var(--border);
+      border-radius: 26px 14px 26px 14px;
+      background: rgba(255,254,251,.84);
+      padding: 18px;
+      min-height: 100%;
+      box-shadow: 0 14px 32px rgba(23,57,51,.055);
+      transition: transform var(--transition), box-shadow var(--transition);
+      text-align: center;
+    }
+
+    .featured-card-home:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 20px 44px rgba(23,57,51,.10);
+    }
+
+    .featured-head,
+    .featured-foot,
+    .featured-meta {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      flex-wrap: wrap;
+      align-items: center;
+      width: 100%;
+    }
+
+    .featured-head h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.02rem;
+      line-height: 1.45;
+      width: 100%;
+    }
+
+    .featured-badge {
+      border-radius: 999px;
+      background: color-mix(in srgb, var(--accent) 16%, var(--card));
+      color: var(--accent-dark);
+      padding: 4px 10px;
+      font-size: .72rem;
+      font-weight: 900;
+    }
+
+    .featured-meta,
+    .featured-card-home p,
+    .featured-foot {
+      color: var(--text-muted);
+      font-size: .78rem;
+      line-height: 1.55;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .featured-card-home p {
+      max-width: 360px;
+      margin-inline: auto;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+
+    .featured-foot .btn,
+    .featured-foot .home-btn-secondary {
+      margin-inline: auto;
+    }
+
+    .featured-participants {
+      display: block;
+      width: 100%;
+      color: var(--text-light);
+      font-size: .72rem;
+      font-weight: 800;
+    }
+
+    .featured-progress {
+      height: 7px;
+      overflow: hidden;
+      border-radius: 999px;
+      background: rgba(45,122,107,.10);
+      width: 100%;
+    }
+
+    .featured-progress span {
+      display: block;
+      height: 100%;
+      background: var(--primary);
+    }
+
+    .rewards-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 16px;
+      width: min(1120px, 100%);
+      margin: 16px auto 0;
+    }
+
+    #rewards .home-results-summary {
+      justify-self: center;
+      margin-top: -4px;
+    }
+
+    #rewards .section-head {
+      grid-template-columns: 1fr;
+      justify-items: center;
+      max-width: 760px;
+      padding: 28px;
+    }
+
+    #rewards .section-action {
+      justify-self: center;
+      margin-top: 4px;
+    }
+
+    .home-trust-card {
+      width: min(1120px, 100%);
+      margin-inline: auto;
+      border: 1px solid var(--border);
+      border-radius: 30px;
+      background: var(--card);
+      box-shadow: var(--shadow);
+      padding: clamp(1.4rem, 3vw, 2.3rem);
+      display: grid;
+      grid-template-columns: minmax(0, 1.05fr) minmax(280px, .95fr);
+      gap: 1.4rem;
+      align-items: center;
+      text-align: right;
+    }
+
+    .home-trust-card h2 {
+      font-size: clamp(1.7rem, 3vw, 2.7rem);
+      line-height: 1.2;
+      color: var(--text);
+    }
+
+    .home-trust-card p {
+      margin-top: .8rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+      font-weight: 700;
+    }
+
+    .home-trust-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .8rem;
+    }
+
+    .home-trust-item {
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      background: var(--bg);
+      padding: 1rem;
+      text-align: center;
+      font-weight: 900;
+      color: var(--primary);
+    }
+
+    .home-cta {
+      position: relative;
+      overflow: hidden;
+      border-radius: 38px 18px 38px 18px;
+      background: rgba(255,254,251,.84);
+      color: var(--text);
+      padding: 48px 28px;
+      text-align: center;
+      box-shadow: 0 14px 32px rgba(23,57,51,.07);
+      width: min(1120px, 100%);
+      margin-inline: auto;
+    }
+
+    .home-cta::before {
+      display: none;
+    }
+
+    .home-cta > * {
+      position: relative;
+    }
+
+    .home-cta h2 {
+      font-family: 'Cairo', sans-serif;
+      font-size: clamp(1.8rem, 3vw, 2.6rem);
+    }
+
+    .home-cta p {
+      max-width: 620px;
+      margin: 12px auto 0;
+      color: var(--text-muted);
+      line-height: 1.85;
+    }
+
+    [data-theme="dark"] .stat-card,
+    [data-theme="dark"] .section-head,
+    [data-theme="dark"] .home-filters,
+    [data-theme="dark"] .home-map-wrap,
+    [data-theme="dark"] .side-list-card,
+    [data-theme="dark"] .featured-card-home,
+    [data-theme="dark"] .home-cta {
+      background: rgba(27,43,39,.84);
+    }
+
+    [data-theme="dark"] .home-map-panel {
+      background: rgba(27,43,39,.92);
+    }
+
+    @media (max-width: 1050px) {
+      .stats-grid,
+      .featured-grid,
+      .rewards-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .section-head {
+        grid-template-columns: 1fr;
+        min-height: auto;
+        padding: 20px;
+      }
+
+      .section-tag,
+      .section-action {
+        justify-self: center;
+      }
+
+      .section-tag {
+        min-width: auto;
+        min-height: auto;
+        padding: 8px 16px;
+      }
+
+      .map-and-list {
+        grid-template-columns: 1fr;
+        width: min(820px, 100%);
+      }
+
+      .home-filters {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .home-results-summary {
+        justify-self: stretch;
+        text-align: center;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .hero-inner {
+        padding: 54px 0 64px;
+      }
+
+      .stats-grid,
+      .featured-grid,
+      .rewards-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .stat-card {
+        min-height: 92px;
+        padding: 14px 16px;
+      }
+
+      .stat-value {
+        font-size: 1.7rem;
+      }
+
+      .home-section {
+        padding: 48px 0;
+      }
+
+      .home-container {
+        row-gap: 18px;
+      }
+
+      .home-filters {
+        grid-template-columns: 1fr;
+      }
+
+      .home-trust-card,
+      .home-trust-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .home-map-wrap,
+      #home-map,
+      .side-list-card {
+        min-height: 380px;
+      }
+
+      .home-btn-primary,
+      .home-btn-secondary {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="home-page">
+
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+
+<main class="home-main">
+  <section class="home-hero">
+    <div class="home-container hero-inner">
+      <span class="hero-kicker">منصة العمل التطوعي في الأردن</span>
+      <h1 class="hero-title">ابدأ رحلتك في <span>العمل التطوعي</span></h1>
+      <p class="hero-copy">
+        انضم إلى مبادرات شبابية في كل المحافظات، اكسب نقاطاً بالحضور، وأنشئ مبادرتك الخاصة.
+        شبكة واحدة تجمع المتطوعين والمبادرات والمكافآت في مكان واحد.
+      </p>
+      <div class="hero-actions">
+        <a href="#initiatives" class="home-btn-primary">استكشف المبادرات</a>
+        <a href="signup.html" class="home-btn-secondary">أنشئ حسابك</a>
+      </div>
+      <p class="hero-note">التسجيل متاح لمن أتم 13 عاماً فأكثر · رقم الهاتف يبدأ بـ +962</p>
+    </div>
+  </section>
+
+  <section class="home-stats" aria-label="إحصائيات المنصة">
+    <div class="home-container stats-grid">
+      <article class="stat-card">
+        <span class="stat-icon">م</span>
+        <div class="stat-copy"><div class="stat-value"><span id="stat-initiatives">--</span>+</div><div class="stat-label">مبادرة معتمدة</div></div>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">ش</span>
+        <div class="stat-copy"><div class="stat-value"><span id="stat-users">--</span>+</div><div class="stat-label">متطوع نشط</div></div>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">خ</span>
+        <div class="stat-copy"><div class="stat-value"><span id="stat-cities">--</span>+</div><div class="stat-label">مدينة على الخريطة</div></div>
+      </article>
+      <article class="stat-card">
+        <span class="stat-icon">30</span>
+        <div class="stat-copy"><div class="stat-value">30</div><div class="stat-label">نقطة لكل حضور</div></div>
+      </article>
+      <span id="stat-participations" hidden>--</span>
+      <span id="hero-stat-users" hidden>--</span>
+      <span id="hero-stat-initiatives" hidden>--</span>
+      <span id="hero-stat-cities" hidden>--</span>
+      <span id="hero-top-city" hidden>--</span>
+      <span id="hero-open-spots" hidden>--</span>
+      <span id="hero-live-status" hidden>--</span>
+      <div id="hero-activity-feed" hidden></div>
+    </div>
+  </section>
+
+  <section class="home-section" id="initiatives">
+    <div class="home-container">
+      <div class="section-head">
+        <span class="section-tag">مبادرات مميزة</span>
+        <div class="section-copy">
+          <h2>اختر محافظة على الخريطة واستعرض فرصها</h2>
+          <p>فلتر المبادرات حسب المدينة والفئة، ثم افتح التفاصيل أو انتقل لصفحة المبادرات للانضمام والمتابعة.</p>
+        </div>
+        <a href="initiatives.html" class="home-btn-secondary section-action">كل المبادرات</a>
+      </div>
+
+      <div class="initiative-shell">
+        <div class="home-filters">
+          <input type="text" id="home-filter-search" class="home-filter-control" placeholder="ابحث عن مبادرة"/>
+          <select id="home-filter-city" class="home-filter-control"><option value="">كل المدن</option></select>
+          <select id="home-filter-gender" class="home-filter-control">
+            <option value="">كل الفئات</option>
+            <option>ذكر</option>
+            <option>أنثى</option>
+            <option>الكل</option>
+          </select>
+          <span class="home-results-summary" id="home-results-summary">جاري تحميل الفرص</span>
+        </div>
+
+        <div class="map-and-list">
+          <div class="home-map-wrap">
+            <div id="home-map"></div>
+            <div class="home-map-panel" id="home-map-panel">
+              <div class="panel-chip-row">
+                <span class="panel-chip">مبادرة مختارة</span>
+                <span class="panel-chip" id="home-panel-city-chip">--</span>
+              </div>
+              <h3 id="home-panel-name">اسم المبادرة</h3>
+              <p id="home-panel-date">التاريخ</p>
+              <div id="home-panel-desc">الوصف</div>
+              <div id="home-panel-count">المشاركون</div>
+              <div class="panel-cta">
+                <button class="btn btn-primary btn-sm" id="home-panel-join-btn" type="button">انضم الآن</button>
+                <a href="initiatives.html" class="home-btn-secondary">عرض الكل</a>
+              </div>
+            </div>
+          </div>
+
+          <aside class="side-list-card">
+            <div class="side-list-head">
+              <h3>أربع فرص قريبة</h3>
+              <p>القائمة تتغير حسب الفلاتر وتساعدك تدخل على صفحة المبادرات بسرعة.</p>
+            </div>
+            <div class="results-stack" id="home-results-list">
+              <div class="result-pill"><strong>نجهز النتائج الآن</strong><span>--</span></div>
+            </div>
+          </aside>
+        </div>
+        <p id="home-suggestion-copy" class="hero-note">سنقترح لك مدينة أو مسار مناسب بعد تحميل البيانات.</p>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="home-container">
+      <div class="section-head">
+        <span class="section-tag">فرص مختارة</span>
+        <div class="section-copy">
+          <h2>بطاقات واضحة لأحدث المبادرات</h2>
+          <p>راجع الموعد والمدينة وعدد المشاركين والنقاط قبل الانتقال لصفحة المبادرات.</p>
+        </div>
+        <a href="initiatives.html" class="home-btn-secondary section-action">عرض الفرص</a>
+      </div>
+      <div class="featured-grid" id="featured-initiatives">
+        <article class="featured-card-home">
+          <div class="featured-head"><h3>جاري تحميل المبادرات</h3><span class="featured-badge">Loading</span></div>
+          <p>نقوم بجلب أحدث البيانات المعتمدة من Firebase.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section" id="rewards">
+    <div class="home-container">
+      <div class="section-head">
+        <span class="section-tag">مكافآت الشركاء</span>
+        <div class="section-copy">
+          <h2>استرداد نقاطك</h2>
+          <p>كلما شاركت وحضرت زاد رصيدك. اختر مكافأة تناسبك واستبدل نقاطك بها من صفحة المكافآت.</p>
+        </div>
+        <a href="redeem.html" class="home-btn-secondary section-action">فتح المكافآت</a>
+      </div>
+      <div class="home-results-summary" id="home-rewards-summary">جاري تحميل المكافآت</div>
+      <div class="rewards-grid" id="home-rewards-grid">
+        <article class="featured-card-home">
+          <div class="featured-head"><h3>جاري تحميل المكافآت</h3><span class="featured-badge">Loading</span></div>
+          <p>نقرأ مكافآت الشركاء من Firebase.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section" aria-label="جاهزية المنصة">
+    <div class="home-container">
+      <div class="home-trust-card">
+        <div>
+          <span class="section-tag">منظومة متكاملة</span>
+          <h2>كل خطوة تطوعية أوضح وأسهل</h2>
+          <p>من البحث عن مبادرة مناسبة، إلى الحضور والنقاط والمكافآت، صُممت همة لتبقى التجربة منظمة ومقروءة للمتطوع وصاحب المبادرة.</p>
+          <div class="hero-actions" style="justify-content:flex-start;margin-top:1.2rem">
+            <a href="initiatives.html" class="home-btn-primary">ابدأ من المبادرات</a>
+            <a href="about.html" class="home-btn-secondary">اعرف أكثر</a>
+          </div>
+        </div>
+        <div class="home-trust-grid">
+          <div class="home-trust-item">حضور موثق</div>
+          <div class="home-trust-item">نقاط واضحة</div>
+          <div class="home-trust-item">مكافآت شركاء</div>
+          <div class="home-trust-item">خرائط مبادرات</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="home-section">
+    <div class="home-container">
+      <div class="home-cta">
+        <h2>لديك فكرة مبادرة؟</h2>
+        <p>أطلق مبادرتك الخاصة، واجمع المتطوعين حولك، واجعل الأثر أوضح من خلال الحضور والنقاط والمتابعة.</p>
+        <div class="hero-actions">
+          <a href="initiatives.html" class="home-btn-secondary">أنشئ مبادرتك الآن</a>
+          <a href="signup.html" class="home-btn-secondary">إنشاء حساب</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  function onPageLoad() {
+    initHomePage();
+  }
+</script>
+</body>
+</html>

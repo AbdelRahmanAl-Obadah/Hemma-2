@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>تطبيق الهاتف - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .phone-page { min-height: 100vh; }
+    .phone-shell { width: min(1240px, calc(100% - 32px)); margin: 0 auto; padding: 2rem 0 3.4rem; display: grid; gap: 1rem; }
+    .phone-hero { position: relative; overflow: hidden; min-height: 520px; border-radius: 2rem; border: 1px solid rgba(215,224,218,.96); background: linear-gradient(135deg, rgba(15,39,35,.98), rgba(37,88,79,.94)), radial-gradient(circle at 16% 80%, rgba(207,160,97,.18), transparent 34%); color: white; padding: 2.25rem; box-shadow: 0 22px 58px rgba(23,57,51,.16); display: grid; align-items: center; isolation: isolate; }
+    .phone-hero::after { content: ''; position: absolute; inset-inline-end: 2rem; top: 2rem; width: min(38vw, 28rem); aspect-ratio: 1; border-radius: 50%; background: conic-gradient(from 120deg, rgba(207,160,97,.18), rgba(63,135,120,.2), rgba(255,255,255,.08), rgba(207,160,97,.18)); opacity: .75; animation: softRotate 22s linear infinite; z-index: -1; }
+    .phone-copy { max-width: 760px; position: relative; z-index: 1; animation: phoneRise .75s ease both; }
+    .phone-kicker { display: inline-flex; align-items: center; gap: .55rem; padding: .52rem .95rem; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.14); color: rgba(255,255,255,.84); font-size: .8rem; font-weight: 800; }
+    .phone-kicker::before { content: ''; width: .58rem; height: .58rem; border-radius: 999px; background: #d7b06c; box-shadow: 0 0 0 5px rgba(215,176,108,.16); }
+    .phone-copy h1 { margin-top: 1.1rem; font-family: 'Cairo', sans-serif; font-size: clamp(2.4rem, 5vw, 4.6rem); line-height: 1.08; }
+    .phone-copy p { margin-top: 1rem; max-width: 46rem; color: rgba(255,255,255,.82); line-height: 2; font-size: 1rem; }
+    .phone-actions { display: flex; flex-wrap: wrap; gap: .8rem; margin-top: 1.5rem; }
+    .phone-points { display: grid; grid-template-columns: repeat(3, minmax(0,1fr)); gap: 1rem; }
+    .phone-point { border: 1px solid var(--border); border-radius: 1.35rem; background: rgba(255,254,251,.86); box-shadow: 0 14px 32px rgba(23,57,51,.07); padding: 1.25rem; animation: phoneRise .7s ease both; }
+    .phone-point strong { display: block; font-family: 'Cairo', sans-serif; font-size: 1.12rem; margin-bottom: .45rem; }
+    .phone-point span { color: var(--text-muted); font-size: .9rem; line-height: 1.85; }
+    @keyframes phoneRise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: translateY(0); } }
+    @keyframes softRotate { to { transform: rotate(360deg); } }
+    @media (max-width: 900px) { .phone-points { grid-template-columns: 1fr; } .phone-hero { min-height: 460px; padding: 1.6rem; } }
+  </style>
+</head>
+<body class="phone-page">
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span>همة</a>
+    <nav class="nav">
+      <a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html" class="active">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a>
+    </nav>
+    <div class="header-actions"><button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">داكن</button><button class="mobile-nav-toggle" onclick="toggleMobileNav()">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div>
+  </div>
+  <nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html" class="active">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav>
+</header>
+<main class="phone-shell">
+  <section class="phone-hero"><div class="phone-copy"><div class="phone-kicker">تطبيق الهاتف</div><h1>تطبيق همة للهاتف قادم قريباً</h1><p>نعمل على تجربة هاتف خفيفة وسريعة تجعل المبادرات أقرب للمتطوعين: إشعارات أوضح، وصول أسرع للمشاركات، ومتابعة أسهل للحضور والنقاط.</p><div class="phone-actions"><a href="initiatives.html" class="btn btn-primary">استكشف المبادرات الآن</a><a href="about.html" class="btn btn-secondary">تعرف على المنصة</a></div></div></section>
+  <section class="phone-points"><article class="phone-point"><strong>إشعارات أوضح</strong><span>تنبيهات للمواعيد والحضور وتحديث حالة المبادرات بدون البحث داخل الصفحات.</span></article><article class="phone-point"><strong>تجربة ميدانية أسرع</strong><span>وصول مباشر للمبادرات والمشاركات أثناء التنقل.</span></article><article class="phone-point"><strong>متابعة النقاط</strong><span>رؤية أوضح للنقاط والمكافآت وسجل المشاركة من مكان واحد.</span></article></section>
+</main>
+<footer class="site-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>التطبيق قيد الإعداد، والمنصة متاحة الآن من الويب.</p></div><div><h4>روابط سريعة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>ابدأ الآن</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="redeem.html">المكافآت</a></div></div></div><div class="site-footer-bottom"><span>همة</span><span>© 2026</span></div></footer>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="app.js"></script>
+</body>
+</html>

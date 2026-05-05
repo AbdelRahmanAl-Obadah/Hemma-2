@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الشراكات - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .collab-page { min-height: 100vh; }
+    .collab-shell {
+      width: min(1240px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 2.2rem 0 3.5rem;
+      display: grid;
+      gap: 1.4rem;
+    }
+    .collab-hero {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(280px, .72fr);
+      gap: 1.2rem;
+      align-items: end;
+      padding: 2rem;
+      border: 1px solid var(--border) !important;
+      border-radius: 2rem !important;
+      background: rgba(255,254,251,.86) !important;
+      box-shadow: 0 14px 32px rgba(23,57,51,.07) !important;
+      overflow: hidden;
+    }
+    .collab-kicker {
+      display: inline-flex;
+      align-items: center;
+      gap: .5rem;
+      border: 1px solid rgba(37,88,79,.18);
+      border-radius: 999px;
+      background: rgba(37,88,79,.08);
+      color: var(--primary);
+      padding: .55rem .9rem;
+      font-size: .82rem;
+      font-weight: 900;
+    }
+    .collab-kicker::before {
+      content: '';
+      width: .55rem;
+      height: .55rem;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(207,160,97,.16);
+    }
+    .collab-hero h1 {
+      max-width: 780px;
+      margin-top: 1rem;
+      font-family: 'Dubai', 'Cairo', sans-serif;
+      font-size: clamp(2.4rem, 6vw, 5.7rem);
+      line-height: 1.05;
+      font-weight: 900;
+      color: var(--text);
+      letter-spacing: 0;
+    }
+    .collab-hero p {
+      max-width: 680px;
+      margin-top: 1rem;
+      color: var(--text-muted);
+      line-height: 2;
+      font-size: 1.04rem;
+    }
+    .collab-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: .75rem;
+      margin-top: 1.5rem;
+    }
+    .collab-score-card {
+      border: 1px solid var(--border) !important;
+      border-radius: 1.6rem !important;
+      background: rgba(255,254,251,.78) !important;
+      box-shadow: 0 12px 28px rgba(23,57,51,.06) !important;
+      padding: 1rem;
+    }
+    .collab-score-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+    }
+    .collab-score {
+      border: 1px solid var(--border);
+      border-radius: 1.3rem;
+      background: var(--bg);
+      padding: 1rem;
+      text-align: center;
+    }
+    .collab-score strong {
+      display: block;
+      font-size: 2.2rem;
+      line-height: 1;
+      color: var(--primary);
+      font-weight: 900;
+    }
+    .collab-score span {
+      display: block;
+      margin-top: .45rem;
+      color: var(--text-muted);
+      font-size: .8rem;
+      font-weight: 800;
+    }
+    .collab-rails {
+      display: grid;
+      gap: 1.2rem;
+    }
+    .partner-rail-section {
+      overflow: hidden;
+      border: 1px solid var(--border) !important;
+      border-radius: 2rem !important;
+      background: rgba(255,254,251,.86) !important;
+      box-shadow: 0 14px 32px rgba(23,57,51,.07) !important;
+    }
+    .partner-rail-inner {
+      display: grid;
+      grid-template-columns: minmax(260px, .76fr) minmax(0, 1.24fr);
+      gap: 1rem;
+      padding: 1.25rem;
+    }
+    .rail-copy {
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      gap: 1.3rem;
+      padding: .4rem;
+    }
+    .rail-title-row {
+      display: flex;
+      align-items: center;
+      gap: .8rem;
+    }
+    .rail-icon {
+      width: 3rem;
+      height: 3rem;
+      display: grid;
+      place-items: center;
+      border-radius: 1rem;
+      background: rgba(37,88,79,.1);
+      color: var(--primary);
+      border: 1px solid rgba(37,88,79,.14);
+      font-weight: 900;
+    }
+    .rail-kicker {
+      color: var(--primary);
+      font-size: .75rem;
+      font-weight: 900;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+    }
+    .rail-copy h2 {
+      margin-top: .25rem;
+      font-family: 'Dubai', 'Cairo', sans-serif;
+      font-size: clamp(1.45rem, 2.5vw, 2.25rem);
+      line-height: 1.25;
+      color: var(--text);
+    }
+    .rail-copy p {
+      margin-top: 1rem;
+      color: var(--text-muted);
+      line-height: 1.9;
+    }
+    .rail-metrics {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: .75rem;
+    }
+    .rail-metric {
+      border: 1px solid var(--border);
+      border-radius: 1.2rem;
+      background: var(--bg);
+      padding: .9rem;
+    }
+    .rail-metric strong {
+      display: block;
+      color: var(--primary);
+      font-size: 1.7rem;
+      line-height: 1;
+      font-weight: 900;
+    }
+    .rail-metric span {
+      display: block;
+      margin-top: .35rem;
+      color: var(--text-muted);
+      font-size: .76rem;
+      font-weight: 800;
+      line-height: 1.65;
+    }
+    .rail-window {
+      position: relative;
+      overflow: hidden;
+      min-width: 0;
+      border: 1px solid var(--border);
+      border-radius: 1.65rem;
+      background: var(--bg);
+      padding: 1rem 0;
+      direction: ltr;
+    }
+    .rail-window::before,
+    .rail-window::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      z-index: 2;
+      width: 4rem;
+      pointer-events: none;
+    }
+    .rail-window::before {
+      left: 0;
+      background: linear-gradient(90deg, var(--bg), transparent);
+    }
+    .rail-window::after {
+      right: 0;
+      background: linear-gradient(270deg, var(--bg), transparent);
+    }
+    .rail-track {
+      display: flex;
+      width: max-content;
+      gap: .9rem;
+      animation: railMove 25s linear infinite;
+      will-change: transform;
+    }
+    .partner-rail-section.reverse .rail-track {
+      animation-direction: reverse;
+      animation-duration: 28s;
+    }
+    .rail-window:hover .rail-track {
+      animation-play-state: paused;
+    }
+    .partner-card-v2 {
+      width: 17.5rem;
+      min-height: 15.5rem;
+      flex: 0 0 auto;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      border: 1px solid var(--border) !important;
+      border-radius: 1.45rem !important;
+      background: var(--card) !important;
+      box-shadow: 0 10px 24px rgba(23,57,51,.06) !important;
+      padding: 1rem;
+      direction: rtl;
+    }
+    .partner-card-top {
+      display: flex;
+      justify-content: space-between;
+      gap: .8rem;
+      align-items: start;
+    }
+    .partner-mark {
+      width: 3.2rem;
+      height: 3.2rem;
+      display: grid;
+      place-items: center;
+      border-radius: 1rem;
+      border: 1px solid rgba(37,88,79,.14);
+      background: rgba(37,88,79,.1);
+      color: var(--primary);
+      font-weight: 900;
+      overflow: hidden;
+    }
+    .partner-mark img {
+      max-width: 2.4rem;
+      max-height: 2.4rem;
+      object-fit: contain;
+    }
+    .partner-badge {
+      border: 1px solid rgba(37,88,79,.14);
+      border-radius: 999px;
+      background: rgba(37,88,79,.08);
+      color: var(--primary);
+      padding: .28rem .65rem;
+      font-size: .68rem;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+    .partner-card-v2 h3 {
+      margin-top: .9rem;
+      color: var(--text);
+      font-size: 1rem;
+      font-weight: 900;
+      line-height: 1.45;
+    }
+    .partner-card-v2 p {
+      margin-top: .5rem;
+      color: var(--text-muted);
+      font-size: .82rem;
+      line-height: 1.75;
+    }
+    .partner-foot {
+      display: flex;
+      justify-content: space-between;
+      gap: .75rem;
+      margin-top: 1rem;
+      padding-top: .8rem;
+      border-top: 1px solid var(--border);
+      color: var(--text-muted);
+      font-size: .72rem;
+      font-weight: 800;
+    }
+    .partner-foot strong { color: var(--primary); }
+    @keyframes railMove {
+      from { transform: translateX(0); }
+      to { transform: translateX(-50%); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .rail-track { animation: none; }
+    }
+    [data-theme="dark"] .collab-hero,
+    [data-theme="dark"] .collab-score-card,
+    [data-theme="dark"] .partner-rail-section,
+    [data-theme="dark"] .partner-card-v2 {
+      background: rgba(27,43,39,.86) !important;
+    }
+    @media (max-width: 900px) {
+      .collab-hero,
+      .partner-rail-inner { grid-template-columns: 1fr; }
+      .collab-score-grid,
+      .rail-metrics { grid-template-columns: 1fr; }
+      .partner-card-v2 { width: 15.5rem; }
+    }
+  </style>
+</head>
+<body class="collab-page">
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+
+<main class="collab-shell">
+  <section class="page-top-shell">
+    <div class="page-top-hero">
+      <div class="page-top-copy"><div class="page-top-kicker">الشراكات</div><h1>تعاونات تتحرك مع نبض المجتمع</h1><p>نربط الجامعات، الجهات الوطنية، المؤسسات العامة، والقطاع الخاص بمسارات تطوعية واضحة: مبادرات معتمدة، حضور موثق، نقاط، ومكافآت ذات أثر.</p><div class="page-top-actions"><a href="initiatives.html" class="btn btn-primary">شاهد المبادرات</a><a href="about.html" class="btn btn-secondary">عن المنصة</a></div></div><div class="page-top-visual" aria-hidden="true"><div class="page-top-ring"></div><div class="page-top-ring"></div><div class="page-top-tag tag-one">جامعات</div><div class="page-top-tag tag-two">شركاء</div><div class="page-top-tag tag-three">أثر</div><div class="page-top-core"><strong>شبكة شراكات</strong><span>المنصة تجمع القطاعات المختلفة داخل تجربة تعاون أوضح وقابلة للتوسع.</span></div></div>
+    </div>
+    <div class="page-top-trio">
+      <article class="page-top-card"><strong>قطاعات متعددة</strong><span>صفحة واحدة تجمع الجامعات، المؤسسات، والقطاع الخاص ضمن عرض واضح.</span></article>
+      <article class="page-top-card"><strong>فرص تعاون فعلية</strong><span>كل شريك يمكن ربطه بمبادرات ومكافآت وتجارب ذات أثر مباشر.</span></article>
+      <article class="page-top-card"><strong>نمو منظم</strong><span>الهيكل مصمم ليستوعب توسع الشبكة بدون فقدان الوضوح أو الترتيب.</span></article>
+    </div>
+  </section>
+
+  <section class="collab-rails" aria-label="قطاعات الشراكات">
+    <article class="partner-rail-section">
+      <div class="partner-rail-inner">
+        <div class="rail-copy">
+          <div>
+            <div class="rail-title-row"><span class="rail-icon">ج</span><div><div class="rail-kicker">Campus network</div><h2>الجامعات الأردنية</h2></div></div>
+            <p>مساحات تعاون مع جامعات أردنية لتفعيل الطلبة داخل المبادرات المجتمعية والبحثية.</p>
+          </div>
+          <div class="rail-metrics"><div class="rail-metric"><strong>6</strong><span>حرم جامعي متصل</span></div><div class="rail-metric"><span>فرق تطوع، برامج خدمة مجتمع، ومبادرات ميدانية للطلبة.</span></div></div>
+        </div>
+        <div class="rail-window"><div class="rail-track">
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ج</span><span class="partner-badge">جامعة رسمية</span></div><h3>الجامعة الأردنية</h3><p>حاضنة طلابية للمبادرات البحثية والتطوعية في عمّان.</p></div><div class="partner-foot"><span>عمّان</span><strong>فرق تطوع طلابية</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ي</span><span class="partner-badge">جامعة رسمية</span></div><h3>جامعة اليرموك</h3><p>شريك تعليمي لتوسيع المشاركة الشبابية في شمال الأردن.</p></div><div class="partner-foot"><span>إربد</span><strong>خدمة مجتمع</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ت</span><span class="partner-badge">تقنية وصحة</span></div><h3>جامعة العلوم والتكنولوجيا</h3><p>مسار جامعي للمبادرات التقنية والصحية ذات الأثر.</p></div><div class="partner-foot"><span>الرمثا</span><strong>مبادرات صحية</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">م</span><span class="partner-badge">الجنوب</span></div><h3>جامعة مؤتة</h3><p>شبكة طلبة ومرشدين للمبادرات في محافظات الجنوب.</p></div><div class="partner-foot"><span>الكرك</span><strong>وصول ميداني</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ه</span><span class="partner-badge">جامعة رسمية</span></div><h3>الجامعة الهاشمية</h3><p>تعاون طلابي في المبادرات البيئية والصحية والمجتمعية.</p></div><div class="partner-foot"><span>الزرقاء</span><strong>مجموعات نشطة</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ب</span><span class="partner-badge">تطبيقية</span></div><h3>جامعة البلقاء التطبيقية</h3><p>مظلة تربط المهارات المهنية بالعمل التطوعي.</p></div><div class="partner-foot"><span>السلط</span><strong>مهارات ميدانية</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ج</span><span class="partner-badge">جامعة رسمية</span></div><h3>الجامعة الأردنية</h3><p>حاضنة طلابية للمبادرات البحثية والتطوعية في عمّان.</p></div><div class="partner-foot"><span>عمّان</span><strong>فرق تطوع طلابية</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ي</span><span class="partner-badge">جامعة رسمية</span></div><h3>جامعة اليرموك</h3><p>شريك تعليمي لتوسيع المشاركة الشبابية في شمال الأردن.</p></div><div class="partner-foot"><span>إربد</span><strong>خدمة مجتمع</strong></div></article>
+        </div></div>
+      </div>
+    </article>
+
+    <article class="partner-rail-section reverse">
+      <div class="partner-rail-inner">
+        <div class="rail-copy">
+          <div>
+            <div class="rail-title-row"><span class="rail-icon">و</span><div><div class="rail-kicker">National alignment</div><h2>الشركاء الحكوميون</h2></div></div>
+            <p>جهات وطنية تساعد على ربط المبادرات بالاحتياجات المحلية ومسارات الخدمة العامة.</p>
+          </div>
+          <div class="rail-metrics"><div class="rail-metric"><strong>4</strong><span>مسارات خدمة وطنية</span></div><div class="rail-metric"><span>تنسيق، توجيه، وتوسيع وصول المبادرات للمحافظات.</span></div></div>
+        </div>
+        <div class="rail-window"><div class="rail-track">
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ش</span><span class="partner-badge">جهة وطنية</span></div><h3>وزارة الشباب</h3><p>تنسيق فرص شبابية ومراكز نشاط في مختلف المحافظات.</p></div><div class="partner-foot"><span>الأردن</span><strong>فرص للشباب</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ب</span><span class="partner-badge">استدامة</span></div><h3>وزارة البيئة</h3><p>دعم مبادرات التشجير والنظافة والتوعية البيئية.</p></div><div class="partner-foot"><span>الأردن</span><strong>مبادرات خضراء</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ت</span><span class="partner-badge">أثر اجتماعي</span></div><h3>وزارة التنمية الاجتماعية</h3><p>ربط المبادرات بالفئات والمراكز المجتمعية الأكثر احتياجاً.</p></div><div class="partner-foot"><span>الأردن</span><strong>وصول للفئات</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ع</span><span class="partner-badge">مدينة</span></div><h3>أمانة عمّان الكبرى</h3><p>مساحات حضرية ومجتمعية لأنشطة التطوع داخل العاصمة.</p></div><div class="partner-foot"><span>عمّان</span><strong>تنفيذ ميداني</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ش</span><span class="partner-badge">جهة وطنية</span></div><h3>وزارة الشباب</h3><p>تنسيق فرص شبابية ومراكز نشاط في مختلف المحافظات.</p></div><div class="partner-foot"><span>الأردن</span><strong>فرص للشباب</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ب</span><span class="partner-badge">استدامة</span></div><h3>وزارة البيئة</h3><p>دعم مبادرات التشجير والنظافة والتوعية البيئية.</p></div><div class="partner-foot"><span>الأردن</span><strong>مبادرات خضراء</strong></div></article>
+        </div></div>
+      </div>
+    </article>
+
+    <article class="partner-rail-section">
+      <div class="partner-rail-inner">
+        <div class="rail-copy">
+          <div>
+            <div class="rail-title-row"><span class="rail-icon">م</span><div><div class="rail-kicker">Civic reach</div><h2>القطاع العام والمجتمعي</h2></div></div>
+            <p>مؤسسات عامة ومراكز مجتمعية تفتح أبوابها للمتطوعين والمبادرات.</p>
+          </div>
+          <div class="rail-metrics"><div class="rail-metric"><strong>4</strong><span>قنوات وصول مجتمعي</span></div><div class="rail-metric"><span>مكتبات، مراكز ثقافية، بلديات، ومساحات آمنة للأنشطة.</span></div></div>
+        </div>
+        <div class="rail-window"><div class="rail-track">
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ز</span><span class="partner-badge">ثقافة ومجتمع</span></div><h3>مركز زها الثقافي</h3><p>برامج للأطفال واليافعين ومساحات آمنة للأنشطة التطوعية.</p></div><div class="partner-foot"><span>عمّان</span><strong>أنشطة يافعين</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ش</span><span class="partner-badge">معرفة</span></div><h3>مكتبة شومان العامة</h3><p>مساحة معرفة تستضيف ورش القراءة والتعليم المجتمعي.</p></div><div class="partner-foot"><span>عمّان</span><strong>ورش تعليمية</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">إ</span><span class="partner-badge">بلدية</span></div><h3>بلدية إربد الكبرى</h3><p>نقاط تنفيذ محلية للمبادرات البيئية والخدمية في الشمال.</p></div><div class="partner-foot"><span>إربد</span><strong>حملات محلية</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ب</span><span class="partner-badge">مراكز مجتمعية</span></div><h3>مراكز الأميرة بسمة</h3><p>شبكة مجتمعية تساعد على وصول المبادرات للأحياء.</p></div><div class="partner-foot"><span>محافظات</span><strong>انتشار محلي</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ز</span><span class="partner-badge">ثقافة ومجتمع</span></div><h3>مركز زها الثقافي</h3><p>برامج للأطفال واليافعين ومساحات آمنة للأنشطة التطوعية.</p></div><div class="partner-foot"><span>عمّان</span><strong>أنشطة يافعين</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ش</span><span class="partner-badge">معرفة</span></div><h3>مكتبة شومان العامة</h3><p>مساحة معرفة تستضيف ورش القراءة والتعليم المجتمعي.</p></div><div class="partner-foot"><span>عمّان</span><strong>ورش تعليمية</strong></div></article>
+        </div></div>
+      </div>
+    </article>
+
+    <article class="partner-rail-section reverse">
+      <div class="partner-rail-inner">
+        <div class="rail-copy">
+          <div>
+            <div class="rail-title-row"><span class="rail-icon">خ</span><div><div class="rail-kicker">Shared value</div><h2>القطاع الخاص وشراكات الأعمال</h2></div></div>
+            <p>شركات ومزودو خدمات يدعمون المبادرات بالرعاية، التقنية، والمكافآت.</p>
+          </div>
+          <div class="rail-metrics"><div class="rail-metric"><strong>8</strong><span>فرص دعم وتشغيل</span></div><div class="rail-metric"><span>رعاية، مكافآت، حلول دفع، حملات رقمية، وقياس أثر.</span></div></div>
+        </div>
+        <div class="rail-window"><div class="rail-track">
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ز</span><span class="partner-badge">اتصالات</span></div><h3>زين الأردن</h3><p>دعم تقني ومجتمعي للمبادرات الشبابية واسعة الوصول.</p></div><div class="partner-foot"><span>عمّان</span><strong>دعم رقمي</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">أ</span><span class="partner-badge">اتصالات</span></div><h3>أمنية</h3><p>شراكة في التمكين الرقمي والمسؤولية المجتمعية.</p></div><div class="partner-foot"><span>الأردن</span><strong>تمكين رقمي</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ع</span><span class="partner-badge">مصارف</span></div><h3>البنك العربي</h3><p>مسارات دعم للمبادرات المالية والتعليمية والمجتمعية.</p></div><div class="partner-foot"><span>عمّان</span><strong>رعاية مجتمعية</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">م</span><span class="partner-badge">صناعة وخدمات</span></div><h3>مجموعة المناصير</h3><p>إسناد لوجستي ورعاية لأنشطة ميدانية في المحافظات.</p></div><div class="partner-foot"><span>الأردن</span><strong>دعم تشغيلي</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ن</span><span class="partner-badge">نمو أعمال</span></div><h3>مسرّعة أعمال أردنية</h3><p>إرشاد ونمذجة تشغيلية لتحويل المبادرات إلى برامج قابلة للتوسع.</p></div><div class="partner-foot"><span>عمّان</span><strong>إرشاد وشبكات</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">د</span><span class="partner-badge">Fintech</span></div><h3>مزود حلول دفع محلي</h3><p>تجربة نقاط ومكافآت أكثر سلاسة للشركاء والمشاركين.</p></div><div class="partner-foot"><span>الأردن</span><strong>تكامل نقاط</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ز</span><span class="partner-badge">اتصالات</span></div><h3>زين الأردن</h3><p>دعم تقني ومجتمعي للمبادرات الشبابية واسعة الوصول.</p></div><div class="partner-foot"><span>عمّان</span><strong>دعم رقمي</strong></div></article>
+          <article class="partner-card-v2"><div><div class="partner-card-top"><span class="partner-mark">ع</span><span class="partner-badge">مصارف</span></div><h3>البنك العربي</h3><p>مسارات دعم للمبادرات المالية والتعليمية والمجتمعية.</p></div><div class="partner-foot"><span>عمّان</span><strong>رعاية مجتمعية</strong></div></article>
+        </div></div>
+      </div>
+    </article>
+  </section>
+</main>
+
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="app.js"></script>
+</body>
+</html>

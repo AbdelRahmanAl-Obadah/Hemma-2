@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>لوحة التحكم - همة</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&family=Tajawal:wght@300;400;500;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #2E5A4B;
+            --primary-light: #3D7A65;
+            --primary-soft: #E9F1ED;
+            --accent: #C59B3F;
+            --accent-light: #DFB85A;
+            --accent-soft: #FBF5E8;
+            --bg: #F7F5F0;
+            --surface: #FFFFFF;
+            --surface-alt: #F1EFE8;
+            --text: #1F1F1F;
+            --text-secondary: #5A5A5A;
+            --text-muted: #8A8A8A;
+            --border: #E0DCD2;
+            --border-light: #F0EDE4;
+            --shadow-xs: 0 1px 2px rgba(0,0,0,0.03);
+            --shadow-sm: 0 2px 8px rgba(0,0,0,0.04);
+            --shadow: 0 8px 24px rgba(0,0,0,0.06);
+            --shadow-lg: 0 16px 40px rgba(0,0,0,0.08);
+            --radius-sm: 10px;
+            --radius: 16px;
+            --radius-lg: 24px;
+            --transition: 0.25s ease;
+            --font-heading: 'Cairo', sans-serif;
+            --font-body: 'Tajawal', sans-serif;
+            --header-height: 76px;
+            --sidebar-width: 260px;
+        }
+
+        [data-theme="dark"] {
+            --bg: #171D1B;
+            --surface: #212927;
+            --surface-alt: #262E2A;
+            --text: #EAECEB;
+            --text-secondary: #B5BCB8;
+            --text-muted: #808B85;
+            --border: #37423D;
+            --border-light: #2D3631;
+            --primary-soft: #263D33;
+            --accent-soft: #3E3524;
+        }
+
+        * { margin:0; padding:0; box-sizing:border-box; }
+        body {
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            line-height: 1.7;
+            min-height: 100vh;
+            transition: background-color 0.4s, color 0.4s;
+            display: flex;
+            flex-direction: column;
+        }
+        a { color: inherit; text-decoration: none; }
+
+        .header {
+            position: sticky;
+            top:0; z-index:1000;
+            background: rgba(255,255,255,0.85);
+            backdrop-filter: blur(18px);
+            -webkit-backdrop-filter: blur(18px);
+            border-bottom:1px solid var(--border);
+            height:var(--header-height);
+            display:flex; align-items:center;
+            padding:0 32px;
+            box-shadow:var(--shadow-xs);
+            transition:background 0.4s;
+        }
+        [data-theme="dark"] .header { background:rgba(33,41,39,0.85); }
+        .header-inner {
+            max-width:1300px; width:100%; margin:0 auto;
+            display:flex; align-items:center; justify-content:space-between; gap:24px;
+        }
+        .logo { display:flex; align-items:center; gap:10px; }
+        .logo-icon {
+            width:42px; height:42px;
+            background: linear-gradient(135deg, var(--primary), var(--primary-light));
+            border-radius:12px; display:flex; align-items:center; justify-content:center;
+            color:#fff; font-size:1.4rem; font-weight:800;
+            font-family:var(--font-heading); box-shadow:0 4px 12px rgba(46,90,75,0.2);
+        }
+        .logo-text { font-family:var(--font-heading); font-size:1.5rem; font-weight:800; color:var(--primary); }
+        .logo-text span { color:var(--accent); }
+        .nav-links { display:flex; align-items:center; gap:4px; list-style:none; }
+        .nav-links a {
+            padding:10px 18px; border-radius:28px;
+            font-weight:500; color:var(--text-secondary); transition:0.2s; font-size:0.95rem;
+        }
+        .nav-links a:hover { background:var(--primary-soft); color:var(--primary); }
+        .header-actions { display:flex; align-items:center; gap:12px; flex-shrink:0; }
+        .btn {
+            display:inline-flex; align-items:center; gap:8px;
+            padding:11px 24px; border-radius:30px; font-weight:600;
+            font-size:0.9rem; cursor:pointer; border:none; transition:0.2s;
+        }
+        .btn-primary { background:var(--primary); color:#fff; box-shadow:0 4px 14px rgba(46,90,75,0.25); }
+        .btn-primary:hover { background:var(--primary-light); transform:translateY(-1px); }
+        .btn-outline { background:transparent; color:var(--primary); border:2px solid var(--primary); }
+        .btn-outline:hover { background:var(--primary); color:#fff; }
+        .btn-danger { background:#D94A4A; color:#fff; }
+        .btn-danger:hover { background:#C0392B; }
+        .theme-toggle {
+            width:42px; height:42px; border-radius:50%; border:1px solid var(--border);
+            background:var(--surface); cursor:pointer; font-size:1.2rem;
+            display:flex; align-items:center; justify-content:center;
+            transition:0.2s; color:var(--text-secondary);
+        }
+        .mobile-menu-btn { display:none; background:none; border:none; font-size:1.8rem; cursor:pointer; color:var(--text); }
+        @media (max-width:920px) {
+            .nav-links { display:none; }
+            .mobile-menu-btn { display:flex; align-items:center; }
+        }
+
+        .main-layout {
+            display: flex;
+            flex:1;
+            max-width: 1300px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 24px;
+            gap: 24px;
+        }
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 20px;
+            box-shadow: var(--shadow-sm);
+            flex-shrink: 0;
+            position: sticky;
+            top: calc(var(--header-height) + 24px);
+            height: fit-content;
+            max-height: calc(100vh - var(--header-height) - 48px);
+            overflow-y: auto;
+        }
+        .sidebar h3 {
+            font-family: var(--font-heading);
+            margin-bottom: 20px;
+            text-align: center;
+            color: var(--primary);
+        }
+        .sidebar-nav {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-nav a {
+            padding: 12px 16px;
+            border-radius: var(--radius-sm);
+            font-weight: 600;
+            color: var(--text-secondary);
+            transition: 0.2s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background: var(--primary-soft);
+            color: var(--primary);
+        }
+        .content {
+            flex:1;
+            min-width:0;
+        }
+        .section-panel {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+        .section-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity:0; transform: translateY(10px); } }
+
+        .card {
+            background: var(--surface);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border);
+            padding: 28px;
+            box-shadow: var(--shadow-sm);
+            margin-bottom: 24px;
+        }
+        .card h2 {
+            font-family: var(--font-heading);
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 18px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            font-weight: 600;
+        }
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 10px 14px;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            font-family: var(--font-body);
+            background: var(--bg);
+            color: var(--text);
+            resize: vertical;
+            outline: none;
+            transition: 0.2s;
+        }
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(46,90,75,0.1);
+        }
+        .item-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 0;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .item-row:last-child { border-bottom: none; }
+        .badge {
+            background: var(--primary-soft);
+            color: var(--primary);
+            padding: 3px 12px;
+            border-radius: 16px;
+            font-size: 0.8rem;
+            font-weight: 700;
+        }
+        .badge.pending { background: #FFF3CD; color: #856404; }
+        .badge.approved { background: #D4EDDA; color: #155724; }
+        .badge.rejected { background: #F8D7DA; color: #721C24; }
+
+        .toast-container {
+            position:fixed; top:20px; left:50%; transform:translateX(-50%);
+            z-index:9999; display:flex; flex-direction:column; gap:8px; pointer-events:none;
+        }
+        .toast {
+            padding:12px 24px; border-radius:28px; font-weight:600;
+            box-shadow:0 8px 24px rgba(0,0,0,0.12);
+            animation: toastIn 0.35s ease, toastOut 0.35s 2.8s ease forwards;
+            pointer-events:auto;
+        }
+        .toast-success { background:#2D6A4F; color:#fff; }
+        .toast-error { background:#C44545; color:#fff; }
+        @keyframes toastIn { from{opacity:0;transform:translateY(-20px);} }
+        @keyframes toastOut { to{opacity:0;transform:translateY(-10px);} }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div class="header-inner">
+            <a href="index.html" class="logo">
+                <div class="logo-icon">ه</div>
+                <div class="logo-text">هم<span>ة</span></div>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">الرئيسية</a>
+                <a href="initiatives.html">المبادرات</a>
+                <a href="about.html">عن المنصة</a>
+                <a href="redeem.html">المكافآت</a>
+            </nav>
+            <div class="header-actions">
+                <button class="theme-toggle" id="themeToggle">🌙</button>
+                <span id="loggedInBtns">
+                    <div class="user-dropdown">
+                        <button class="user-avatar-btn" id="userAvatarBtn" style="width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg, var(--primary), var(--primary-light));color:#fff;border:2px solid var(--primary-light);cursor:pointer;font-weight:700;">👤</button>
+                        <div class="dropdown-menu" id="dropdownMenu" style="position:absolute;top:calc(100%+12px);left:0;background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow-lg);min-width:220px;opacity:0;visibility:hidden;transform:translateY(-8px);transition:0.25s;z-index:100;overflow:hidden;">
+                            <a href="profile.html">👤 الملف الشخصي</a>
+                            <a href="dashboard.html">📊 لوحة التحكم</a>
+                            <a href="#" id="signOutBtn" class="danger">🚪 تسجيل الخروج</a>
+                        </div>
+                    </div>
+                </span>
+                <button class="mobile-menu-btn" id="mobileMenuBtn">☰</button>
+            </div>
+        </div>
+    </header>
+
+    <div class="main-layout">
+        <aside class="sidebar">
+            <h3>لوحة التحكم</h3>
+            <nav class="sidebar-nav" id="sidebarNav">
+                <a href="#" data-panel="profile" class="active"><i class="fa-solid fa-user"></i> الملف الشخصي</a>
+                <a href="#" data-panel="myInitiatives"><i class="fa-solid fa-list-check"></i> مبادراتي</a>
+                <a href="#" data-panel="joined"><i class="fa-solid fa-hand-holding-heart"></i> المنضم إليها</a>
+                <a href="#" data-panel="create"><i class="fa-solid fa-plus-circle"></i> إنشاء مبادرة</a>
+            </nav>
+        </aside>
+        <main class="content">
+            <!-- Profile Panel -->
+            <section class="section-panel active" id="panelProfile">
+                <div class="card">
+                    <h2>تعديل الملف الشخصي</h2>
+                    <form id="profileForm">
+                        <div class="form-group">
+                            <label>اسم المستخدم</label>
+                            <input type="text" id="profileUsername" disabled>
+                        </div>
+                        <div class="form-group">
+                            <label>السيرة الذاتية</label>
+                            <textarea id="profileBio" rows="3" placeholder="اكتب نبذة عنك..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>المدينة</label>
+                            <select id="profileCity">
+                                <option value="">اختر</option>
+                                <option>عمان</option><option>إربد</option><option>الزرقاء</option>
+                                <option>السلط</option><option>الكرك</option><option>معان</option>
+                                <option>العقبة</option><option>المفرق</option><option>جرش</option>
+                                <option>عجلون</option><option>مادبا</option><option>الطفيلة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الهاتف</label>
+                            <input type="tel" id="profilePhone" placeholder="+9627xxxxxxxx">
+                        </div>
+                        <button type="submit" class="btn btn-primary">حفظ التغييرات</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- My Initiatives Panel -->
+            <section class="section-panel" id="panelMyInitiatives">
+                <div class="card">
+                    <h2>مبادراتي</h2>
+                    <div id="myInitiativesList">
+                        <p>جاري التحميل...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Joined Panel -->
+            <section class="section-panel" id="panelJoined">
+                <div class="card">
+                    <h2>المبادرات المنضم إليها</h2>
+                    <div id="joinedList">
+                        <p>جاري التحميل...</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Create Initiative Panel -->
+            <section class="section-panel" id="panelCreate">
+                <div class="card">
+                    <h2>إنشاء مبادرة جديدة</h2>
+                    <form id="createForm">
+                        <div class="form-group">
+                            <label>اسم المبادرة</label>
+                            <input type="text" id="initName" required>
+                        </div>
+                        <div class="form-group">
+                            <label>التاريخ</label>
+                            <input type="date" id="initDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label>الوقت</label>
+                            <input type="time" id="initTime" required>
+                        </div>
+                        <div class="form-group">
+                            <label>المدينة</label>
+                            <select id="initCity" required>
+                                <option value="">اختر</option>
+                                <option>عمان</option><option>إربد</option><option>الزرقاء</option>
+                                <option>السلط</option><option>الكرك</option><option>معان</option>
+                                <option>العقبة</option><option>المفرق</option><option>جرش</option>
+                                <option>عجلون</option><option>مادبا</option><option>الطفيلة</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الجنس المستهدف</label>
+                            <select id="initGender" required>
+                                <option value="الكل">الكل</option>
+                                <option value="ذكور">ذكور</option>
+                                <option value="إناث">إناث</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>الوصف</label>
+                            <textarea id="initDesc" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>العدد الأقصى للمشاركين</label>
+                            <input type="number" id="initMax" min="1" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary">إرسال للمراجعة</button>
+                    </form>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <div class="toast-container" id="toastContainer"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script>
+        (function() {
+            const firebaseConfig = {
+                apiKey: "AIzaSyDemoKeyForHimmah",
+                authDomain: "himmah-jo.firebaseapp.com",
+                projectId: "himmah-jo",
+                storageBucket: "himmah-jo.appspot.com",
+                messagingSenderId: "111111111111",
+                appId: "1:111111111111:web:abc123"
+            };
+            if (!firebase.apps.length) firebase.initializeApp(firebaseConfig);
+            const auth = firebase.auth();
+            const db = firebase.firestore();
+
+            const themeToggle = document.getElementById('themeToggle');
+            const userAvatarBtn = document.getElementById('userAvatarBtn');
+            const dropdownMenu = document.getElementById('dropdownMenu');
+            const signOutBtn = document.getElementById('signOutBtn');
+            const toastContainer = document.getElementById('toastContainer');
+            let currentUser = null;
+
+            function showToast(msg, type='info'){
+                const t = document.createElement('div');
+                t.className = `toast toast-${type}`;
+                t.textContent = msg;
+                toastContainer.appendChild(t);
+                setTimeout(()=>t.remove(), 3500);
+            }
+
+            // Theme
+            const saved = localStorage.getItem('himmah-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', saved);
+            themeToggle.textContent = saved==='dark'?'☀️':'🌙';
+            themeToggle.addEventListener('click',()=>{
+                const next = document.documentElement.getAttribute('data-theme')==='dark'?'light':'dark';
+                document.documentElement.setAttribute('data-theme', next);
+                localStorage.setItem('himmah-theme', next);
+                themeToggle.textContent = next==='dark'?'☀️':'🌙';
+            });
+
+            // Dropdown
+            userAvatarBtn.addEventListener('click',(e)=>{ e.stopPropagation(); dropdownMenu.classList.toggle('show'); });
+            document.addEventListener('click',()=>dropdownMenu.classList.remove('show'));
+            signOutBtn.addEventListener('click',async(e)=>{ e.preventDefault(); await auth.signOut(); });
+
+            // Auth check
+            auth.onAuthStateChanged(async (user)=>{
+                if(!user) { window.location.href='signin.html'; return; }
+                currentUser = user;
+                userAvatarBtn.textContent = (user.displayName||user.email||'م')[0];
+                await loadUserData(user.uid);
+            });
+
+            // Sidebar navigation
+            const sidebarLinks = document.querySelectorAll('.sidebar-nav a');
+            const panels = {
+                profile: document.getElementById('panelProfile'),
+                myInitiatives: document.getElementById('panelMyInitiatives'),
+                joined: document.getElementById('panelJoined'),
+                create: document.getElementById('panelCreate'),
+            };
+            sidebarLinks.forEach(link=>{
+                link.addEventListener('click',(e)=>{
+                    e.preventDefault();
+                    sidebarLinks.forEach(l=>l.classList.remove('active'));
+                    link.classList.add('active');
+                    const panel = link.dataset.panel;
+                    Object.values(panels).forEach(p=>p.classList.remove('active'));
+                    if(panels[panel]) panels[panel].classList.add('active');
+                });
+            });
+
+            async function loadUserData(uid){
+                try {
+                    const userDoc = await db.collection('users').doc(uid).get();
+                    if(!userDoc.exists) return;
+                    const data = userDoc.data();
+                    // Fill profile form
+                    document.getElementById('profileUsername').value = data.username || '';
+                    document.getElementById('profileBio').value = data.bio || '';
+                    document.getElementById('profileCity').value = data.city || '';
+                    document.getElementById('profilePhone').value = data.phone || '';
+                    // Load initiatives
+                    loadMyInitiatives(uid);
+                    loadJoinedInitiatives(uid);
+                } catch(e){ console.error(e); }
+            }
+
+            // Profile update
+            document.getElementById('profileForm').addEventListener('submit', async (e)=>{
+                e.preventDefault();
+                if(!currentUser) return;
+                const bio = document.getElementById('profileBio').value.trim();
+                const city = document.getElementById('profileCity').value;
+                const phone = document.getElementById('profilePhone').value.trim();
+                if(phone && !phone.startsWith('+962')){
+                    showToast('رقم الهاتف يجب أن يبدأ بـ +962','error');
+                    return;
+                }
+                try {
+                    await db.collection('users').doc(currentUser.uid).update({
+                        bio, city, phone,
+                    });
+                    showToast('تم تحديث الملف الشخصي','success');
+                } catch(e){ showToast('خطأ: '+e.message,'error'); }
+            });
+
+            // My Initiatives
+            async function loadMyInitiatives(uid){
+                const container = document.getElementById('myInitiativesList');
+                try {
+                    const snap = await db.collection('initiatives').where('createdBy','==',uid).get();
+                    if(snap.empty){
+                        container.innerHTML = '<p>لم تقم بإنشاء أي مبادرة بعد.</p>';
+                        return;
+                    }
+                    let html = '';
+                    snap.forEach(doc=>{
+                        const init = doc.data();
+                        html += `
+                            <div class="item-row">
+                                <div>
+                                    <strong>${init.name}</strong>
+                                    <div>${init.date} - ${init.city} 
+                                        <span class="badge ${init.status}">${init.status==='pending'?'قيد المراجعة':init.status==='approved'?'معتمدة':'مرفوضة'}</span>
+                                    </div>
+                                </div>
+                                <button class="btn btn-danger btn-sm" onclick="deleteInitiative('${doc.id}')">حذف</button>
+                            </div>
+                        `;
+                    });
+                    container.innerHTML = html;
+                } catch(e){ container.innerHTML = '<p>حدث خطأ</p>'; }
+            }
+            window.deleteInitiative = async function(id){
+                if(!confirm('هل أنت متأكد من حذف هذه المبادرة؟')) return;
+                try {
+                    await db.collection('initiatives').doc(id).delete();
+                    showToast('تم حذف المبادرة','success');
+                    loadMyInitiatives(currentUser.uid);
+                } catch(e){ showToast('خطأ: '+e.message,'error'); }
+            };
+
+            // Joined Initiatives
+            async function loadJoinedInitiatives(uid){
+                const container = document.getElementById('joinedList');
+                try {
+                    const partSnap = await db.collection('participations')
+                        .where('userId','==',uid)
+                        .where('status','in',['joined','attended'])
+                        .get();
+                    if(partSnap.empty){
+                        container.innerHTML = '<p>لم تنضم لأي مبادرة بعد.</p>';
+                        return;
+                    }
+                    let html = '';
+                    for(const partDoc of partSnap.docs){
+                        const p = partDoc.data();
+                        const initDoc = await db.collection('initiatives').doc(p.initiativeId).get();
+                        if(!initDoc.exists) continue;
+                        const init = initDoc.data();
+                        html += `
+                            <div class="item-row">
+                                <div>
+                                    <strong>${init.name}</strong>
+                                    <div>${init.date} - ${init.city}</div>
+                                </div>
+                                <button class="btn btn-outline btn-sm" onclick="cancelParticipation('${partDoc.id}')">إلغاء الانضمام</button>
+                            </div>
+                        `;
+                    }
+                    container.innerHTML = html;
+                } catch(e){ container.innerHTML = '<p>حدث خطأ</p>'; }
+            }
+            window.cancelParticipation = async function(partId){
+                if(!confirm('هل أنت متأكد من إلغاء الانضمام؟')) return;
+                try {
+                    await db.collection('participations').doc(partId).delete();
+                    showToast('تم إلغاء الانضمام','success');
+                    loadJoinedInitiatives(currentUser.uid);
+                } catch(e){ showToast('خطأ: '+e.message,'error'); }
+            };
+
+            // Create Initiative
+            document.getElementById('createForm').addEventListener('submit', async (e)=>{
+                e.preventDefault();
+                if(!currentUser) return;
+                const name = document.getElementById('initName').value.trim();
+                const date = document.getElementById('initDate').value;
+                const time = document.getElementById('initTime').value;
+                const city = document.getElementById('initCity').value;
+                const gender = document.getElementById('initGender').value;
+                const desc = document.getElementById('initDesc').value.trim();
+                const max = parseInt(document.getElementById('initMax').value);
+                if(!name || !date || !time || !city || !desc || !max){
+                    showToast('جميع الحقول مطلوبة','error'); return;
+                }
+                if(max < 1){ showToast('العدد الأقصى غير صحيح','error'); return; }
+                try {
+                    await db.collection('initiatives').add({
+                        name, date, time, city, gender,
+                        description: desc,
+                        maxParticipants: max,
+                        createdBy: currentUser.uid,
+                        status: 'pending',
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                    showToast('تم إرسال المبادرة للمراجعة','success');
+                    document.getElementById('createForm').reset();
+                    // Switch to my initiatives panel
+                    document.querySelector('.sidebar-nav a[data-panel="myInitiatives"]').click();
+                    loadMyInitiatives(currentUser.uid);
+                } catch(e){ showToast('خطأ: '+e.message,'error'); }
+            });
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>مشاركاتي - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .my-shell { width: min(1320px, calc(100% - 32px)); margin: 0 auto; padding: 2rem 0 3rem; display: grid; gap: 1rem; }
+    .my-hero { padding: 1.6rem; border-radius: 2rem; background: linear-gradient(135deg, rgba(15,39,35,.98), rgba(37,88,79,.94)); color: white; display: grid; grid-template-columns: minmax(0,1fr) auto; gap: 1rem; align-items: center; box-shadow: 0 22px 58px rgba(23,57,51,.16); }
+    .my-hero h1 { font-family:'Cairo',sans-serif; font-size:2rem; font-weight:900; }
+    .my-hero p { color: rgba(255,255,255,0.8); margin-top:.45rem; }
+    .my-overview { display:grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap:1rem; }
+    .my-grid { display:grid; grid-template-columns: minmax(0,1.1fr) minmax(320px,.9fr); gap:1rem; align-items:start; }
+    .surface-card { border:1px solid var(--border); border-radius:1.45rem; background: rgba(255,254,251,.84); box-shadow:0 14px 32px rgba(23,57,51,.07); overflow:hidden; }
+    .section-head { display:flex; align-items:center; justify-content:space-between; gap:1rem; padding:1rem 1.1rem; border-bottom:1px solid var(--border); background:rgba(45,122,107,.06); }
+    .section-head h2 { font-family:'Cairo',sans-serif; font-size:1.05rem; font-weight:900; }
+    .section-sub { color:var(--text-muted); font-size:.76rem; font-weight:700; }
+    .items-stack { display:grid; gap:.85rem; padding:1rem; }
+    .my-empty { padding:2.5rem 1rem; text-align:center; color:var(--text-muted); }
+    @media (max-width:960px) { .my-hero,.my-grid,.my-overview { grid-template-columns:1fr; } }
+  </style>
+</head>
+<body class="my-page">
+<header class="header"><div class="header-inner"><a href="index.html" class="logo"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span>همة</a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html" class="active">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">داكن</button><button class="mobile-nav-toggle" onclick="toggleMobileNav()">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html" class="active">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+<main class="my-shell">
+  <section class="my-hero"><div><h1>مساحة المبادرات والمشاركات الخاصة بك</h1><p>تابع المبادرات التي أنشأتها والمشاركات التي انضممت لها وسجّل الحضور عند الحاجة.</p></div><button type="button" class="btn btn-primary" id="my-open-create-btn">إنشاء مبادرة جديدة</button></section>
+  <section class="my-overview"><div class="overview-box"><strong id="summary-created-top">0</strong><span>مبادرات أنشأتها</span></div><div class="overview-box"><strong id="summary-joined-top">0</strong><span>مبادرات منضم لها</span></div><div class="overview-box"><strong id="summary-attended-top">0</strong><span>حضور موثق</span></div></section>
+  <section class="my-grid"><div class="surface-card"><div class="section-head"><div><h2>مبادراتي المنشأة</h2><div class="section-sub" id="my-created-count">0 مبادرة</div></div></div><div class="items-stack" id="my-created-list"></div><div class="my-empty hide" id="my-created-empty">لا توجد مبادرات أنشأتها بعد.</div></div><div class="surface-card"><div class="section-head"><div><h2>المبادرات المنضم لها</h2><div class="section-sub" id="my-joined-count">0 مشاركة</div></div></div><div class="items-stack" id="my-joined-list"></div><div class="my-empty hide" id="my-joined-empty">لم تنضم لأي مبادرة بعد.</div></div></section>
+</main>
+<div class="modal-overlay" id="attendance-modal"><div class="modal"><div class="modal-title">الحضور والغياب</div><div class="modal-subtitle" id="attendance-modal-name"></div><div class="attendance-list-wrap" id="attendance-list"><div class="spinner"></div></div><div class="modal-actions"><button class="btn btn-secondary" onclick="closeModal('attendance-modal')">إغلاق</button></div></div></div>
+<div class="modal-overlay" id="my-edit-initiative-modal"><div class="modal"><div class="modal-title">تعديل المبادرة</div><form id="my-edit-initiative-form"><div id="my-edit-fields" style="display:grid;gap:12px"></div><div class="modal-actions"><button class="btn btn-primary" type="submit">حفظ</button><button class="btn btn-secondary" type="button" onclick="closeModal('my-edit-initiative-modal')">إلغاء</button></div></form></div></div>
+<div class="modal-overlay" id="create-initiative-modal"><div class="modal"><div class="modal-title">إنشاء مبادرة جديدة</div><form id="create-initiative-form" style="display:grid;gap:12px;margin-top:1rem"><input class="form-control" name="name" placeholder="اسم المبادرة"><div id="create-error-name" class="field-error"></div><textarea class="form-control" name="description" placeholder="الوصف"></textarea><input class="form-control" name="startsAt" type="datetime-local"><div id="create-error-startsAt" class="field-error"></div><select class="form-control" name="city" id="create-city-select"></select><div id="create-error-city" class="field-error"></div><input class="form-control" name="minParticipants" type="number" min="2" placeholder="الحد الأدنى"><div id="create-error-minParticipants" class="field-error"></div><input class="form-control" name="maxParticipants" type="number" min="2" placeholder="الحد الأقصى"><div id="create-error-maxParticipants" class="field-error"></div><select class="form-control" name="gender"><option value="الكل">الجميع</option><option value="ذكر">ذكور</option><option value="أنثى">إناث</option></select><div class="modal-actions"><button type="submit" class="btn btn-primary" id="create-initiative-submit-btn">إرسال للمراجعة</button><button type="button" class="btn btn-secondary" onclick="closeModal('create-initiative-modal')">إلغاء</button></div></form></div></div>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script><script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script><script src="app.js"></script><script>function onPageLoad(){initMyInitiativesPage();}</script>
+</body>
+</html>

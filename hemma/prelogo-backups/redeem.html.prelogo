@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>استبدال النقاط - همة</title>
+  <link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<header class="header">
+  <div class="header-inner">
+    <a href="index.html" class="logo"><div class="logo-icon">🌿</div>همة</a>
+    <nav class="nav">
+      <a href="index.html">الرئيسية</a>
+      <a href="initiatives.html">المبادرات</a>
+      <a href="redeem.html" class="active">استبدال النقاط</a>
+    </nav>
+    <div class="header-actions">
+      <button class="theme-toggle" id="theme-btn" onclick="toggleTheme()">🌙</button>
+      <div id="header-auth" style="display:flex;gap:8px;align-items:center"></div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- Hero -->
+  <div style="background:linear-gradient(135deg,var(--primary-dark),var(--primary));color:white;padding:48px 24px;text-align:center">
+    <div style="font-size:3rem;margin-bottom:12px">🎁</div>
+    <h1 style="font-family:'Cairo',sans-serif;font-size:2rem;font-weight:900;margin-bottom:8px">استبدل نقاطك بمكافآت</h1>
+    <p style="opacity:0.85;margin-bottom:20px">نقاطك تعكس تأثيرك - استبدلها بمكافآت حقيقية</p>
+    <div style="display:inline-flex;align-items:center;gap:10px;background:rgba(255,255,255,0.15);border:1px solid rgba(255,255,255,0.3);border-radius:30px;padding:10px 24px;backdrop-filter:blur(8px)">
+      <span style="font-size:1.1rem">⭐</span>
+      <span style="font-family:'Cairo',sans-serif;font-size:1.8rem;font-weight:900" id="redeem-points">-</span>
+      <span style="font-size:0.95rem;opacity:0.85">نقطة لديك</span>
+    </div>
+  </div>
+
+  <!-- Points Info -->
+  <div style="background:var(--card);border-bottom:1px solid var(--border);padding:20px 24px">
+    <div style="max-width:900px;margin:0 auto;display:flex;justify-content:center;gap:40px;flex-wrap:wrap">
+      <div style="text-align:center">
+        <div style="font-size:1.5rem;font-weight:900;font-family:'Cairo',sans-serif;color:var(--success)">+30</div>
+        <div style="font-size:0.85rem;color:var(--text-muted)">نقطة لكل حضور</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:1.5rem;font-weight:900;font-family:'Cairo',sans-serif;color:var(--danger)">-10</div>
+        <div style="font-size:0.85rem;color:var(--text-muted)">نقطة عند الغياب</div>
+      </div>
+      <div style="text-align:center">
+        <div style="font-size:1.5rem;font-weight:900;font-family:'Cairo',sans-serif;color:var(--primary)">0</div>
+        <div style="font-size:0.85rem;color:var(--text-muted)">الحد الأدنى للنقاط</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rewards -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header">
+        <h2>المكافآت المتاحة</h2>
+        <p>استبدل نقاطك بواحدة من هذه المكافآت</p>
+      </div>
+      <div class="grid-3" id="rewards-list">
+        <div style="grid-column:1/-1;text-align:center;padding:40px"><div class="spinner"></div></div>
+      </div>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="footer-logo">🌿 همة</div>
+  <p>منصة العمل التطوعي في الأردن</p>
+  <p style="margin-top:8px">© جميع الحقوق محفوظة 2025</p>
+</footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  function onPageLoad() {
+    initRedeemPage();
+  }
+</script>
+</body>
+</html>

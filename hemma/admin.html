@@ -1,0 +1,718 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>لوحة الأدمن - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    :root {
+      --primary: #2d7a6b;
+      --primary-light: #e8f5f2;
+      --primary-lighter: #f0faf8;
+      --secondary: #f5a623;
+      --secondary-light: #fff9f0;
+      --success: #27ae60;
+      --danger: #e74c3c;
+      --bg-primary: #f8fafb;
+      --bg-secondary: #f0f3f5;
+      --text-primary: #1a2332;
+      --text-secondary: #6b7c8f;
+      --border-color: #e0e6eb;
+      --card-light: rgba(255,255,255,0.8);
+      --divider: #d0d8e0;
+    }
+    [data-theme="dark"] {
+      --bg-primary: #0f1419;
+      --bg-secondary: #1a2332;
+      --text-primary: #e8ecf1;
+      --text-secondary: #a0b0c0;
+      --border-color: #2a3844;
+      --card-light: rgba(26,46,34,0.8);
+      --divider: #3a4855;
+    }
+    .admin-page {
+      background: var(--bg-primary);
+      min-height: 100vh;
+    }
+    .admin-layout {
+      max-width: 1540px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem 3rem;
+      display: grid;
+      grid-template-columns: 240px minmax(0, 1fr);
+      gap: 1rem;
+      align-items: start;
+    }
+    .admin-sidebar {
+      position: sticky;
+      top: 88px;
+      border: 1px solid var(--border-color);
+      border-radius: 1.25rem;
+      background: var(--card-light);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      padding: 1rem;
+      display: grid;
+      gap: .5rem;
+    }
+    .admin-sidebar-title {
+      padding: .4rem .55rem .7rem;
+      color: var(--text-primary);
+      font-weight: 900;
+      font-size: .9rem;
+    }
+    .admin-sidebar a {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: .7rem;
+      min-height: 42px;
+      border-radius: .9rem;
+      padding: .65rem .8rem;
+      color: var(--text-secondary);
+      font-weight: 800;
+      font-size: .84rem;
+      transition: background .2s ease, color .2s ease;
+    }
+    .admin-sidebar a:hover {
+      background: rgba(45,122,107,.1);
+      color: var(--primary);
+    }
+    .admin-shell {
+      max-width: none;
+      margin: 0;
+      padding: 0;
+    }
+    .section-divider {
+      height: 1px;
+      background: var(--divider);
+      margin: 2.5rem 0 2.5rem 0;
+    }
+    .admin-overview {
+      display: grid;
+      gap: 1.5rem;
+      margin-bottom: 1rem;
+    }
+    .admin-analytics-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1rem;
+    }
+    .admin-analytics-head h1 {
+      font-family: 'Cairo', sans-serif;
+      font-size: clamp(1.7rem, 2.4vw, 2.5rem);
+      font-weight: 900;
+      line-height: 1.15;
+      color: var(--text-primary);
+    }
+    .admin-analytics-head p {
+      margin-top: 0.45rem;
+      color: var(--text-secondary);
+      font-size: 0.9rem;
+      line-height: 1.8;
+    }
+    .admin-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.2rem;
+      align-items: center;
+      justify-content: space-between;
+      border: 1px solid var(--border-color);
+      border-radius: 1.1rem;
+      background: rgba(232, 245, 242, 0.25);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      padding: 1.3rem;
+      backdrop-filter: blur(8px);
+      margin-bottom: 1.5rem;
+    }
+    [data-theme="dark"] .admin-toolbar {
+      background: rgba(45,122,107,0.08);
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .admin-filter-group {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem;
+      align-items: center;
+      flex: 1;
+    }
+    .admin-filter-item {
+      display: flex;
+      align-items: center;
+      gap: 0.7rem;
+    }
+    .admin-filter-label {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .admin-filter-select {
+      min-width: 135px;
+      min-height: 36px;
+      border-radius: 8px;
+      border: 1px solid rgba(45, 122, 107, 0.25);
+      background: rgba(232, 245, 242, 0.4);
+      color: var(--text-primary);
+      padding: 0.5rem 0.8rem;
+      font-size: 0.8rem;
+      font-family: inherit;
+      transition: all 0.2s ease;
+    }
+    [data-theme="dark"] .admin-filter-select {
+      background: rgba(45,122,107,0.12);
+      border-color: rgba(45, 122, 107, 0.3);
+    }
+    .admin-filter-select:hover, .admin-filter-select:focus {
+      border-color: var(--primary);
+      background: rgba(232, 245, 242, 0.6);
+    }
+    [data-theme="dark"] .admin-filter-select:hover, [data-theme="dark"] .admin-filter-select:focus {
+      background: rgba(45,122,107,0.2);
+    }
+    .admin-toolbar-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.7rem;
+      align-items: center;
+    }
+    .admin-soft-btn {
+      min-height: 36px;
+      padding: 0.6rem 1rem;
+      border-radius: 8px;
+      border: 1px solid rgba(45, 122, 107, 0.25);
+      background: rgba(232, 245, 242, 0.3);
+      color: var(--primary);
+      font-size: 0.8rem;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: all 0.2s ease;
+      cursor: pointer;
+    }
+    [data-theme="dark"] .admin-soft-btn {
+      background: rgba(45,122,107,0.1);
+      border-color: rgba(45, 122, 107, 0.3);
+    }
+    .admin-soft-btn:hover {
+      background: rgba(232, 245, 242, 0.5);
+      border-color: var(--primary);
+    }
+    [data-theme="dark"] .admin-soft-btn:hover {
+      background: rgba(45,122,107,0.18);
+    }
+    .admin-stat-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .admin-stat-card, .admin-side-card, .admin-chart-card {
+      border: 1px solid var(--border-color);
+      border-radius: 1.1rem;
+      background: var(--card-light);
+      padding: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      backdrop-filter: blur(8px);
+      transition: all 0.3s ease;
+    }
+    [data-theme="dark"] .admin-stat-card, [data-theme="dark"] .admin-side-card, [data-theme="dark"] .admin-chart-card {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .admin-stat-card:hover, .admin-side-card:hover, .admin-chart-card:hover {
+      box-shadow: 0 6px 16px rgba(45,122,107,0.1);
+      border-color: rgba(45, 122, 107, 0.3);
+    }
+    .admin-stat-card strong {
+      display: block;
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.8rem;
+      line-height: 1;
+      margin-bottom: 0.4rem;
+      color: var(--primary);
+    }
+    .admin-stat-card span {
+      color: var(--text-secondary);
+      font-size: 0.8rem;
+      font-weight: 700;
+      line-height: 1.8;
+    }
+    .admin-side-card h3,
+    .admin-chart-card h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1rem;
+      font-weight: 900;
+      margin-bottom: 0.8rem;
+      color: var(--text-primary);
+    }
+    .admin-side-list {
+      display: grid;
+      gap: 0.7rem;
+    }
+    .admin-side-row {
+      display: flex;
+      justify-content: space-between;
+      gap: 1rem;
+      color: var(--text-secondary);
+      font-size: 0.82rem;
+      font-weight: 700;
+      padding-bottom: 0.7rem;
+      border-bottom: 1px solid var(--border-color);
+    }
+    .admin-side-row:last-child {
+      border-bottom: 0;
+      padding-bottom: 0;
+    }
+    .admin-side-row strong { color: var(--text-primary); }
+    .admin-analytics-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(320px, .85fr);
+      gap: 1rem;
+    }
+    .admin-chart-list {
+      display: grid;
+      gap: 0.85rem;
+    }
+    .admin-chart-row {
+      display: grid;
+      gap: 0.4rem;
+    }
+    .admin-chart-meta {
+      display: flex;
+      justify-content: space-between;
+      gap: 0.75rem;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: var(--text-secondary);
+    }
+    .admin-chart-meta strong {
+      color: var(--text-primary);
+    }
+    .admin-chart-track {
+      height: 8px;
+      border-radius: 999px;
+      background: rgba(232, 245, 242, 0.5);
+      overflow: hidden;
+    }
+    [data-theme="dark"] .admin-chart-track {
+      background: rgba(45,122,107,0.15);
+    }
+    .admin-chart-fill {
+      height: 100%;
+      border-radius: inherit;
+      background: var(--primary);
+    }
+    .admin-insights {
+      margin-bottom: 1rem;
+      border: 1px solid var(--border-color);
+      border-radius: 1.1rem;
+      background: var(--card-light);
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      backdrop-filter: blur(8px);
+      padding: 1.5rem;
+    }
+    [data-theme="dark"] .admin-insights {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .admin-insights-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 1rem;
+      flex-wrap: wrap;
+      margin-bottom: 1.2rem;
+    }
+    .admin-insights-head h2 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.25rem;
+      font-weight: 900;
+      color: var(--text-primary);
+    }
+    .admin-insights-head p {
+      color: var(--text-secondary);
+      font-size: 0.85rem;
+      line-height: 1.8;
+      margin-top: 0.35rem;
+    }
+    .admin-insights-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 1rem;
+    }
+    .admin-mini-chart-card {
+      border: 1px solid var(--border-color);
+      border-radius: 1rem;
+      background: var(--card-light);
+      padding: 1.2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      transition: all 0.3s ease;
+    }
+    [data-theme="dark"] .admin-mini-chart-card {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .admin-mini-chart-card:hover {
+      box-shadow: 0 6px 16px rgba(45,122,107,0.1);
+      border-color: rgba(45, 122, 107, 0.3);
+    }
+    .admin-mini-chart-card h3 {
+      font-family: 'Cairo', sans-serif;
+      font-size: 0.98rem;
+      font-weight: 900;
+      margin-bottom: 0.8rem;
+      color: var(--text-primary);
+    }
+
+    /* Section Cards Navigation */
+    .admin-section-nav {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 1.2rem;
+      margin-bottom: 2rem;
+      margin-top: 1.5rem;
+    }
+    .admin-section-card {
+      cursor: pointer;
+      padding: 1.8rem;
+      border-radius: 1.1rem;
+      border: 2px solid var(--border-color);
+      background: rgba(232, 245, 242, 0.25);
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+    [data-theme="dark"] .admin-section-card {
+      background: rgba(45,122,107,0.08);
+    }
+    .admin-section-card:hover {
+      border-color: rgba(45, 122, 107, 0.5);
+      box-shadow: 0 8px 16px rgba(45,122,107,0.08);
+      transform: translateY(-2px);
+    }
+    .admin-section-card.active {
+      border-color: var(--primary);
+      background: rgba(232, 245, 242, 0.5);
+      box-shadow: 0 8px 20px rgba(45,122,107,0.12);
+    }
+    [data-theme="dark"] .admin-section-card.active {
+      background: rgba(45,122,107,0.15);
+      box-shadow: 0 8px 20px rgba(45,122,107,0.2);
+    }
+    .admin-section-card .icon {
+      font-size: 2.2rem;
+      margin-bottom: 0.6rem;
+      display: block;
+    }
+    .admin-section-card .title {
+      font-family: 'Cairo', sans-serif;
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--text-primary);
+      margin-bottom: 0.3rem;
+    }
+    .admin-section-card .subtitle {
+      font-size: 0.8rem;
+      color: var(--text-secondary);
+      font-weight: 600;
+    }
+    .admin-section-content {
+      border: 1px solid var(--border-color);
+      border-radius: 1.1rem;
+      background: var(--card-light);
+      padding: 2rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.03);
+      backdrop-filter: blur(8px);
+      animation: fadeIn 0.3s ease;
+    }
+    [data-theme="dark"] .admin-section-content {
+      box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .admin-section-content.hidden {
+      display: none;
+    }
+    @media (max-width: 1024px) {
+      .admin-section-nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 640px) {
+      .admin-section-nav {
+        grid-template-columns: 1fr;
+      }
+      .admin-section-content {
+        padding: 1.5rem;
+      }
+    }
+    @media (max-width: 980px) {
+      .admin-layout {
+        grid-template-columns: 1fr;
+      }
+      .admin-sidebar {
+        position: static;
+        grid-template-columns: repeat(2, minmax(0,1fr));
+      }
+      .admin-sidebar-title {
+        grid-column: 1 / -1;
+      }
+      .admin-stat-grid,
+      .admin-analytics-grid,
+      .admin-insights-grid { grid-template-columns: 1fr; }
+      .admin-filter-group {
+        gap: 1rem;
+      }
+    }
+    @media (max-width: 760px) {
+      .admin-stat-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .admin-sidebar { grid-template-columns: 1fr; }
+      .admin-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .admin-filter-group {
+        flex-direction: column;
+      }
+      .admin-filter-item {
+        width: 100%;
+      }
+      .admin-filter-select {
+        width: 100%;
+      }
+    }
+  </style>
+</head>
+<body class="admin-page">
+
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+
+
+<div class="admin-layout">
+<aside class="admin-sidebar" aria-label="تنقل لوحة الأدمن">
+  <div class="admin-sidebar-title">لوحة التحكم</div>
+  <a href="#admin-stats">الإحصائيات <span>↙</span></a>
+  <a href="#admin-pending" onclick="selectSection('pending')">المبادرات المعلقة <span>⏳</span></a>
+  <a href="#admin-approved" onclick="selectSection('approved')">المبادرات المقبولة <span>✓</span></a>
+  <a href="#admin-users" onclick="selectSection('users')">المستخدمون <span>👥</span></a>
+  <a href="#admin-rewards" onclick="selectSection('rewards')">المكافآت <span>🎁</span></a>
+  <a href="#admin-settings" onclick="selectSection('settings')">الإعدادات <span>⚙</span></a>
+</aside>
+<main class="admin-shell">
+  <!-- Section 1: إحصائيات المنصة -->
+  <section class="admin-overview" id="admin-stats">
+    <div class="admin-analytics-head">
+      <div>
+        <h1>إحصائيات المنصة</h1>
+        <p>فلتر الإحصاءات حسب حالة المبادرات أو المحافظة</p>
+      </div>
+    </div>
+
+    <div class="admin-toolbar">
+      <div class="admin-filter-group">
+        <div class="admin-filter-item">
+          <span class="admin-filter-label">حالة المبادرة</span>
+          <select class="admin-filter-select" id="admin-filter-status">
+            <option value="all">الكل</option>
+            <option value="pending">معلقة</option>
+            <option value="approved">مقبولة</option>
+            <option value="rejected">مرفوضة</option>
+            <option value="cancelled">ملغاة</option>
+          </select>
+        </div>
+        <div class="admin-filter-item">
+          <span class="admin-filter-label">المحافظة</span>
+          <select class="admin-filter-select" id="admin-filter-city">
+            <option value="all">كل المحافظات</option>
+          </select>
+        </div>
+      </div>
+      <div class="admin-toolbar-actions">
+        <button class="admin-soft-btn" type="button" onclick="refreshAdminOverview()">تحديث</button>
+        <button class="admin-soft-btn" type="button" onclick="resetAdminFilters()">مسح الفلاتر</button>
+        <button class="admin-soft-btn" type="button" onclick="seedAdminDemoData()">تعبئة تجريبية</button>
+      </div>
+    </div>
+
+    <div class="admin-stat-grid">
+      <div class="admin-stat-card"><strong id="admin-stat-pending">0</strong><span>مبادرات بانتظار القرار</span></div>
+      <div class="admin-stat-card"><strong id="admin-stat-approved">0</strong><span>مبادرات معتمدة</span></div>
+      <div class="admin-stat-card"><strong id="admin-stat-users">0</strong><span>مستخدمون مسجلون</span></div>
+      <div class="admin-stat-card"><strong id="admin-stat-rewards">0</strong><span>مكافآت فعالة</span></div>
+      <div class="admin-stat-card"><strong id="admin-stat-rejected">0</strong><span>مبادرات مرفوضة</span></div>
+      <div class="admin-stat-card"><strong id="admin-stat-cities">0</strong><span>مدن في البيانات</span></div>
+      <div class="admin-stat-card"><strong id="admin-stat-roles">0</strong><span>أدوار مستخدمين</span></div>
+      <div class="admin-stat-card"><strong id="admin-stat-dates">0</strong><span>أيام نشاط مسجلة</span></div>
+    </div>
+
+    <div class="admin-analytics-grid">
+      <div class="admin-chart-card">
+        <h3>توزيع المبادرات حسب المحافظة</h3>
+        <div class="admin-chart-list" id="admin-city-chart"></div>
+      </div>
+      <div class="admin-side-card">
+        <h3>إحصاءات إضافية</h3>
+        <div class="admin-side-list" id="admin-extra-stats">
+          <div class="admin-side-row"><span>المبادرات المرفوضة</span><strong>0</strong></div>
+          <div class="admin-side-row"><span>الحسابات المجمدة</span><strong>0</strong></div>
+          <div class="admin-side-row"><span>إجمالي المشاركات</span><strong>0</strong></div>
+          <div class="admin-side-row"><span>متوسط السعة</span><strong>0</strong></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Section 2: تحليلات تفصيلية -->
+  <section class="admin-insights">
+    <div class="admin-insights-head">
+      <div>
+        <h2>تحليلات تفصيلية</h2>
+        <p>قسم منفصل لقراءة التركيبة العامة للمستخدمين والمبادرات والمشاركات</p>
+      </div>
+      <div class="admin-filter-group">
+        <div class="admin-filter-item">
+          <span class="admin-filter-label">فلتر الجنس</span>
+          <select class="admin-filter-select" id="admin-analytics-gender">
+            <option value="all">الكل</option>
+            <option value="ذكر">ذكور</option>
+            <option value="أنثى">إناث</option>
+          </select>
+        </div>
+        <div class="admin-filter-item">
+          <span class="admin-filter-label">فلتر المدينة</span>
+          <select class="admin-filter-select" id="admin-analytics-city">
+            <option value="all">كل المحافظات</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <div class="admin-insights-grid">
+      <div class="admin-mini-chart-card">
+        <h3>توزيع الأعمار</h3>
+        <div class="admin-chart-list" id="admin-age-chart"></div>
+      </div>
+      <div class="admin-mini-chart-card">
+        <h3>حالات المبادرات</h3>
+        <div class="admin-chart-list" id="admin-status-chart"></div>
+      </div>
+      <div class="admin-mini-chart-card">
+        <h3>حالات المشاركات</h3>
+        <div class="admin-chart-list" id="admin-participation-chart"></div>
+      </div>
+      <div class="admin-mini-chart-card">
+        <h3>أدوار المستخدمين</h3>
+        <div class="admin-chart-list" id="admin-role-chart"></div>
+      </div>
+      <div class="admin-mini-chart-card">
+        <h3>تواريخ المبادرات</h3>
+        <div class="admin-chart-list" id="admin-date-chart"></div>
+      </div>
+    </div>
+  </section>
+
+  <div class="section-divider"></div>
+
+  <!-- Section 3: الإدارة المفصلة -->
+  <div>
+    <div class="admin-section-nav">
+      <div class="admin-section-card active" data-tab="pending" onclick="selectSection('pending')">
+        <span class="icon">⏳</span>
+        <div class="title">المعلقة</div>
+        <div class="subtitle">في انتظار القرار</div>
+      </div>
+      <div class="admin-section-card" data-tab="approved" onclick="selectSection('approved')">
+        <span class="icon">✓</span>
+        <div class="title">المقبولة</div>
+        <div class="subtitle">تم الموافقة</div>
+      </div>
+      <div class="admin-section-card" data-tab="users" onclick="selectSection('users')">
+        <span class="icon">👥</span>
+        <div class="title">المستخدمون</div>
+        <div class="subtitle">إدارة الحسابات</div>
+      </div>
+      <div class="admin-section-card" data-tab="rewards" onclick="selectSection('rewards')">
+        <span class="icon">🎁</span>
+        <div class="title">المكافآت</div>
+        <div class="subtitle">نظام المكافآت</div>
+      </div>
+    </div>
+
+    <section class="admin-section-content active" id="admin-pending">
+      <div id="pending-list"><div class="spinner"></div></div>
+    </section>
+
+    <section class="admin-section-content hidden" id="admin-approved">
+      <div id="approved-list"><div class="spinner"></div></div>
+    </section>
+
+    <section class="admin-section-content hidden" id="admin-users">
+      <div id="users-list"><div class="spinner"></div></div>
+    </section>
+
+    <section class="admin-section-content hidden" id="admin-rewards">
+      <div id="rewards-admin-list"><div class="spinner"></div></div>
+    </section>
+    <section class="admin-section-content hidden" id="admin-settings">
+      <div class="empty-state" style="padding:1rem"><h3>الإعدادات</h3><p>مساحة تنظيمية لإعدادات المنصة. لم يتم تغيير أي منطق أو صلاحيات حالية.</p></div>
+    </section>
+  </div>
+</main>
+</div>
+
+<div class="modal-overlay" id="admin-edit-modal">
+  <div class="modal" style="max-width: 620px">
+    <div class="modal-title" id="modal-title">تعديل</div>
+    <div class="modal-subtitle">حدّث البيانات المطلوبة ثم احفظ التغييرات.</div>
+    <form id="edit-form">
+      <div id="edit-fields" style="display:grid;gap:12px"></div>
+      <div class="modal-actions">
+        <button type="submit" class="btn btn-primary">حفظ التعديلات</button>
+        <button type="button" class="btn btn-secondary" onclick="closeModal('admin-edit-modal')">إلغاء</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>
+  function selectSection(tab) {
+    document.querySelectorAll('.admin-section-card').forEach(el => el.classList.remove('active'));
+    document.querySelectorAll('.admin-section-content').forEach(el => el.classList.add('hidden'));
+    document.querySelector(`[data-tab="${tab}"]`)?.classList.add('active');
+    const section = document.getElementById(`admin-${tab}`);
+    if (section) section.classList.remove('hidden');
+
+    const loaders = {
+      pending:  loadPendingInitiatives,
+      approved: loadApprovedInitiatives,
+      users:    loadAllUsers,
+      rewards:  loadRewards,
+      settings: () => {}
+    };
+    if (loaders[tab]) loaders[tab]();
+  }
+
+  const _origLoadAdminTab = window.loadAdminTab;
+  function loadAdminTab(tab) {
+    selectSection(tab);
+  }
+
+  function onPageLoad() {
+    initAdminPage();
+  }
+</script>
+</body>
+</html>

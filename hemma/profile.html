@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>الملف الشخصي - همة</title>
+  <link rel="icon" type="image/png" href="Logo.png"/>
+  <link rel="stylesheet" href="styles.css"/>
+  <style>
+    .public-profile-page { min-height:100vh; display:flex; flex-direction:column; }
+    .profile-shell { width:min(1100px, calc(100% - 32px)); margin:34px auto 60px; display:grid; gap:18px; }
+    .profile-hero-card, .profile-panel { border:1px solid var(--border); background:var(--card); border-radius:24px; box-shadow:0 14px 34px rgba(23,57,51,.07); padding:24px; }
+    .profile-hero-card { display:grid; grid-template-columns:auto minmax(0,1fr) auto; gap:18px; align-items:center; }
+    .profile-avatar { width:82px; height:82px; border-radius:26px; display:grid; place-items:center; background:var(--primary); color:#fff; font-size:2rem; font-weight:900; }
+    .profile-hero-card h1 { font-family:'Cairo',sans-serif; font-size:1.8rem; }
+    .profile-meta { color:var(--text-muted); font-size:.9rem; margin-top:4px; }
+    .profile-bio { color:var(--text-muted); line-height:1.8; margin-top:12px; }
+    .profile-stats { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+    .profile-stat { border:1px solid var(--border); background:var(--bg); border-radius:16px; padding:14px; text-align:center; }
+    .profile-stat strong { display:block; font-family:'Cairo',sans-serif; font-size:1.8rem; color:var(--text); }
+    .profile-stat span { color:var(--text-muted); font-size:.82rem; font-weight:800; }
+    .profile-grid { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:18px; }
+    .profile-panel h2 { font-family:'Cairo',sans-serif; font-size:1.25rem; margin-bottom:12px; }
+    .profile-history-list { display:grid; gap:10px; }
+    .profile-history-item { border:1px solid var(--border); background:var(--bg); border-radius:16px; padding:14px; }
+    .profile-history-item h4 { font-family:'Cairo',sans-serif; font-size:1rem; }
+    .profile-history-meta { margin-top:6px; display:flex; flex-wrap:wrap; gap:8px; color:var(--text-muted); font-size:.8rem; font-weight:800; }
+    .profile-history-meta span { border-radius:999px; background:var(--card); padding:4px 9px; }
+    .history-good { color:var(--success) !important; }
+    .history-bad { color:var(--danger) !important; }
+    .profile-social { display:flex; gap:8px; flex-wrap:wrap; margin-top:12px; }
+    .profile-social a { border:1px solid var(--border); border-radius:999px; padding:7px 12px; color:var(--primary); font-weight:900; }
+    @media(max-width: 800px){ .profile-hero-card,.profile-grid{grid-template-columns:1fr}.profile-stats{grid-template-columns:1fr} }
+  </style>
+</head>
+<body class="public-profile-page">
+<header class="header site-unified-header"><div class="header-inner"><a href="index.html" class="logo" aria-label="الرئيسية"><span class="logo-icon"><img src="Logo.png" alt="همة"/></span></a><nav class="nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav><div class="header-actions"><button class="theme-toggle" id="theme-btn" type="button" onclick="window.toggleTheme && window.toggleTheme()">داكن</button><button class="mobile-nav-toggle" type="button" onclick="document.getElementById('mobile-nav')?.classList.toggle('active')">القائمة</button><div id="header-auth" style="display:flex;gap:8px;align-items:center"></div></div></div><nav class="mobile-nav" id="mobile-nav"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="col.html">الشراكات</a><a href="about.html">عن المنصة</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></nav></header>
+
+
+<main class="profile-shell" id="profile-container">
+  <section class="profile-hero-card">
+    <div class="profile-avatar" id="profile-initial">؟</div>
+    <div>
+      <h1 id="profile-username">جاري تحميل الملف</h1>
+      <div class="profile-meta" id="profile-meta-line">نقرأ البيانات من Firebase...</div>
+      <p class="profile-bio" id="profile-bio"></p>
+      <div class="profile-social" id="profile-social-links"></div>
+    </div>
+    <div class="profile-stat" id="profile-points-card"><strong id="profile-points">0</strong><span>نقطة</span></div>
+  </section>
+
+  <section class="profile-stats">
+    <div class="profile-stat"><strong id="profile-created-count">0</strong><span>مبادرات أنشأها</span></div>
+    <div class="profile-stat"><strong id="profile-joined-count">0</strong><span>مشاركات</span></div>
+    <div class="profile-stat"><strong id="profile-attended-count">0</strong><span>حضور موثق</span></div>
+  </section>
+
+  <section class="profile-grid">
+    <article class="profile-panel">
+      <h2>مبادرات أنشأها</h2>
+      <div id="profile-created-initiatives"><div class="empty-state">جاري التحميل...</div></div>
+    </article>
+    <article class="profile-panel">
+      <h2>تاريخ المشاركات</h2>
+      <div id="profile-joined-initiatives"><div class="empty-state">جاري التحميل...</div></div>
+    </article>
+  </section>
+</main>
+
+<footer class="site-footer unified-footer"><div class="site-footer-inner"><div class="site-footer-brand"><span class="site-footer-mark"><img src="Logo.png" alt="همة"/></span><h4>همة</h4><p>منصة أردنية تنظّم المبادرات، الحضور، النقاط، والمكافآت في تجربة واحدة واضحة.</p></div><div><h4>المنصة</h4><div class="site-footer-links"><a href="index.html">الرئيسية</a><a href="initiatives.html">المبادرات</a><a href="about.html">عن المنصة</a></div></div><div><h4>الخدمات</h4><div class="site-footer-links"><a href="col.html">الشراكات</a><a href="phone.html">تطبيق الهاتف</a><a href="redeem.html">المكافآت</a></div></div><div><h4>الحساب</h4><div class="site-footer-links"><a href="signin.html">تسجيل الدخول</a><a href="signup.html">إنشاء حساب</a><a href="dashboard.html">لوحة المستخدم</a></div></div></div><div class="site-footer-bottom"><span>همة - منصة العمل التطوعي</span><span>© 2026 جميع الحقوق محفوظة</span></div></footer>
+
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+<script src="app.js"></script>
+<script>function onPageLoad(){ initProfilePage(); }</script>
+</body>
+</html>
